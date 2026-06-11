@@ -79,7 +79,7 @@ int main() {
       print('  - ${m.mediaType} [priority: ${m.priority}]');
     }
     print('- Root XML:');
-    for (final m in matches.magicMatches) {
+    for (final m in matches.rootXmlMatches) {
       print('  - ${m.mediaType} [priority: ${m.priority}]');
     }
     exit(0);

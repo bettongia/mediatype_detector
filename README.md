@@ -64,7 +64,7 @@ dart pub get
 import 'dart:io';
 import 'dart:typed_data' show Uint8List;
 
-import 'package:betto_mediatype_detector/mediatype_detector.dart';
+import 'package:betto_mediatype_detector/betto_mediatype_detector.dart';
 import 'package:path/path.dart' as p;
 
 void main() {
@@ -131,7 +131,7 @@ consulted first; if it returns a non-empty result, the override and blended
 registries are not consulted.
 
 ```dart
-import 'package:betto_mediatype_detector/mediatype_detector.dart';
+import 'package:betto_mediatype_detector/betto_mediatype_detector.dart';
 
 final myRegistry = MyAppMimeInfoRegistry(myEntries);
 
@@ -145,7 +145,7 @@ final matches = detect(
 ### Using a bundled registry directly
 
 ```dart
-import 'package:betto_mediatype_detector/mediatype_detector.dart';
+import 'package:betto_mediatype_detector/betto_mediatype_detector.dart';
 
 // Freedesktop only
 final fdMatches = freedesktopMimeInfoRegistry.detect(

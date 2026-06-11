@@ -4,6 +4,8 @@ build/
 coverage/
 doc/
 integration_test_app/
+test/
+test.log
 Containerfile
 Makefile
 addlicense_config.txt
