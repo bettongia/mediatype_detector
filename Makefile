@@ -59,8 +59,7 @@ license_add:
 	cat addlicense_config.txt | xargs addlicense
 
 coverage:
-	flutter test --coverage
-	# dart test --coverage-path=coverage/lcov.info
+	dart test --coverage-path=coverage/lcov.info
 	rm -rf site/coverage
 	mkdir -p site/coverage
 	genhtml coverage/lcov.info -o site/coverage
