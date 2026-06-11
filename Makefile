@@ -62,41 +62,39 @@ license_check:
 license_add:
 	cat addlicense_config.txt | xargs addlicense
 
-coverage: coverage.log
-.PHONY: coverage
-
-coverage.log: lib/** test/**
+coverage:
 	flutter test --coverage
 	# dart test --coverage-path=coverage/lcov.info
 	rm -rf site/coverage
 	mkdir -p site/coverage
-	genhtml coverage/lcov.info -o site/coverage/html
+	genhtml coverage/lcov.info -o site/coverage
+.PHONY: coverage
 
 # BEGIN: Documentation site tasks
 site/:
 	mkdir -p site
 
-site: styles site/index.html site/api.html site/spec.html site/roadmap.html api-docs/index.html | site/
+site: styles site/index.html site/api/index.html coverage | site/
 .PHONY: site
 
 styles: site/styles/styles.css
 .PHONY: styles
 
 site/index.html:  docs/index.md docs/.pandoc docs/template/header.html | site/
-	pandoc --defaults="docs/.pandoc" docs/index.md -o "site/index.html";
+	pandoc --defaults="docs/.pandoc" docs/index.md README.md -o "site/index.html";
 
-site/spec.html:  docs/spec/*.md docs/spec/.pandoc docs/template/header.html | site/
-	pandoc --defaults="docs/spec/.pandoc" --mathml docs/spec/*.md -o "site/spec.html";
+#site/spec.html:  docs/spec/*.md docs/spec/.pandoc docs/template/header.html | site/
+#	pandoc --defaults="docs/spec/.pandoc" --mathml docs/spec/*.md -o "site/spec.html";
 
-site/roadmap.html: docs/roadmap/*.md docs/.pandoc docs/template/header.html | site/
-	pandoc --defaults="docs/.pandoc" docs/roadmap/v*.md -o "site/roadmap.html";
+#site/roadmap.html: docs/roadmap/*.md docs/.pandoc docs/template/header.html | site/
+#	pandoc --defaults="docs/.pandoc" docs/roadmap/v*.md -o "site/roadmap.html";
 
 site/styles/styles.css: docs/styles/styles.css | site/
 	mkdir -p site/styles/
 	cp docs/styles/styles.css site/styles/styles.css
 
-api-docs/index.html:
-	dart doc -o api-docs/index.html
+site/api/index.html:
+	dart doc -o site/api
 
 # END: Documentation site tasks
 
