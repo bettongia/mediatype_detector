@@ -41,16 +41,72 @@ final freedesktopMimeInfoRegistry = FreedesktopMimeInfoRegistry(fd.mimeinfoDb);
 // import 'package:betto_mediatype_detector/src/mimeinfo/registry.dart';
 // final freedesktopMimeInfoRegistry = FreedesktopMimeInfoRegistry(emptyRegistry);
 
-/// Detect the media type of the file
+/// Detect the media type of the file.
 ///
-/// Use this as the main filetype detection function as this allows
-/// for future work to improve and add to the detector.
+/// Merges results from both the Tika and Freedesktop registries across all
+/// three detection stages (glob, magic, root XML). For duplicate media types,
+/// Tika takes precedence as it has broader coverage of modern formats; results
+/// unique to Freedesktop are appended. The two databases complement each other:
+/// Tika covers more XML-based application types (DITA, Apple iWork, MS Office
+/// XML, etc.) while Freedesktop covers others (MathML, GML, GPX, Dia, etc.).
 MatchList detect({
   Uint8List? bytes,
   String? fileName,
   bool caseSensitive = false,
-}) => freedesktopMimeInfoRegistry.detect(
-  bytes: bytes,
-  fileName: fileName,
-  caseSensitive: caseSensitive,
-);
+}) {
+  final tikaGlob = fileName != null
+      ? tikaMimeInfoRegistry.matchGlob(fileName, caseSensitive: caseSensitive)
+      : null;
+  final fdGlob = fileName != null
+      ? freedesktopMimeInfoRegistry.matchGlob(
+          fileName,
+          caseSensitive: caseSensitive,
+        )
+      : null;
+
+  final tikaMagic = bytes != null
+      ? tikaMimeInfoRegistry.matchMagic(bytes)
+      : null;
+  final fdMagic = bytes != null
+      ? freedesktopMimeInfoRegistry.matchMagic(bytes)
+      : null;
+
+  final mergedGlob = fileName != null
+      ? _mergeResults(tikaGlob!, fdGlob!)
+      : null;
+  final mergedMagic = bytes != null
+      ? _mergeResults(tikaMagic!, fdMagic!)
+      : null;
+
+  List<MatchResult>? rootXmlMatches;
+  if (bytes != null &&
+      tikaMimeInfoRegistry.isLikelyXml(mergedGlob, mergedMagic)) {
+    rootXmlMatches = _mergeResults(
+      tikaMimeInfoRegistry.matchRootXML(bytes),
+      freedesktopMimeInfoRegistry.matchRootXML(bytes),
+    );
+  }
+
+  return MatchList(
+    globMatches: mergedGlob,
+    magicMatches: mergedMagic,
+    rootXmlMatches: rootXmlMatches,
+  );
+}
+
+/// Merges two result lists, deduplicating by media type.
+///
+/// [primary] takes precedence for duplicate types; the combined list is sorted
+/// by priority descending.
+List<MatchResult> _mergeResults(
+  List<MatchResult> primary,
+  List<MatchResult> secondary,
+) {
+  final seen = <String>{};
+  final merged = <MatchResult>[];
+  for (final m in [...primary, ...secondary]) {
+    if (seen.add(m.mediaType)) merged.add(m);
+  }
+  merged.sort((a, b) => b.priority.compareTo(a.priority));
+  return merged;
+}
