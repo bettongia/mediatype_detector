@@ -29,7 +29,7 @@ analyze:
 .PHONY: analyze
 
 
-test: test.log
+test:
 	dart test  | tee test.log
 .PHONY: test
 
