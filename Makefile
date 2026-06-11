@@ -2,13 +2,13 @@
 
 # BEGIN: Primary tasks
 
-default: format analyze license_check test
+default: prepare format analyze license_check test
 .PHONY: default
 
-pre_commit: format_check analyze license_check
+pre_commit: prepare format_check analyze license_check
 .PHONY: pre_commit
 
-cicd: format_check analyze license_check test
+cicd: prepare format_check analyze license_check test
 .PHONY: cicd
 
 # END: Primary tasks
@@ -95,6 +95,9 @@ site/api/index.html:
 	dart doc -o site/api
 
 # END: Documentation site tasks
+
+prepare:
+	dart pub get
 
 clean:
 	rm -rf site dist coverage
