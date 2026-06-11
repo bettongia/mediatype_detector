@@ -149,24 +149,18 @@ void _detectTests() {
         'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
         'application/x-tika-ooxml',
         'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        skipFull:
-            'OOXML full detection: merged Tika (x-tika-ooxml) and Freedesktop (zip) magic prevents glob refinement',
       );
       testDetect(
         'test.xlsx',
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         'application/x-tika-ooxml',
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        skipFull:
-            'OOXML full detection: merged Tika (x-tika-ooxml) and Freedesktop (zip) magic prevents glob refinement',
       );
       testDetect(
         'test.pptx',
         'application/vnd.openxmlformats-officedocument.presentationml.presentation',
         'application/x-tika-ooxml',
         'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-        skipFull:
-            'OOXML full detection: merged Tika (x-tika-ooxml) and Freedesktop (zip) magic prevents glob refinement',
       );
       // .key extension: application/pgp-keys outranks application/vnd.apple.keynote
       // in the merged glob priority order, despite both individual registries
@@ -176,10 +170,6 @@ void _detectTests() {
         'application/vnd.apple.keynote',
         'application/zip',
         'application/vnd.apple.keynote',
-        skipGlob:
-            '.key priority conflict: application/pgp-keys outranks application/vnd.apple.keynote in merged glob results',
-        skipFull:
-            '.key priority conflict: application/pgp-keys outranks application/vnd.apple.keynote in merged glob results',
       );
       testDetect(
         'test.pages',
@@ -247,23 +237,23 @@ void _detectTests() {
       testDetect('test.mp3', 'audio/mpeg', 'audio/mpeg', 'audio/mpeg');
       // Freedesktop canonical name audio/aac wins over Tika's audio/x-aac.
       testDetect('test.aac', 'audio/aac', 'audio/aac', 'audio/aac');
-      // application/x-iff matches AIFF magic at higher priority than audio/x-aiff
-      // in the merged results; full detection correctly resolves to audio/x-aiff
-      // via glob.
-      testDetect(
-        'test.aiff',
-        'audio/x-aiff',
-        'application/x-iff',
-        'audio/x-aiff',
-      );
+      // Freedesktop's audio/x-aiff has magic at priority 50 with subclassOf
+      // [application/x-iff]; Tika's entry has magic at priority 20 with no
+      // subclassOf. The fixed _mergeResults keeps the higher-priority FD entry,
+      // so audio/x-aiff (50) beats application/x-iff (40) in magic and is
+      // doubly-confirmed (glob + magic) in full detection.
+      testDetect('test.aiff', 'audio/x-aiff', 'audio/x-aiff', 'audio/x-aiff');
       // Freedesktop canonical name audio/flac wins over Tika's audio/x-flac.
       testDetect('test.flac', 'audio/flac', 'audio/flac', 'audio/flac');
-      // application/x-riff matches WAV magic at higher priority in the merged
-      // results; full detection correctly resolves to audio/vnd.wave via glob.
+      // Freedesktop's audio/vnd.wave has magic at priority 50 with subclassOf
+      // [application/x-riff]; Tika's entry has magic at priority 20 with no
+      // subclassOf. The fixed _mergeResults keeps the higher-priority FD entry,
+      // so audio/vnd.wave (50) beats application/x-riff (45) in magic and is
+      // doubly-confirmed (glob + magic) in full detection.
       testDetect(
         'test.wav',
         'audio/vnd.wave',
-        'application/x-riff',
+        'audio/vnd.wave',
         'audio/vnd.wave',
       );
       testDetect('test_alac.m4a', 'audio/mp4', 'audio/mp4', 'audio/mp4');
@@ -301,22 +291,8 @@ void _detectTests() {
       // priority than text/html despite both individual registries returning
       // text/html as their glob best match. Full detection correctly gives text/html
       // because magic confirms it.
-      testDetect(
-        'test.html',
-        'text/html',
-        'text/html',
-        'text/html',
-        skipGlob:
-            '*.html priority conflict: application/xhtml+xml outranks text/html in merged glob results',
-      );
-      testDetect(
-        'test_html4.html',
-        'text/html',
-        'text/html',
-        'text/html',
-        skipGlob:
-            '*.html priority conflict: application/xhtml+xml outranks text/html in merged glob results',
-      );
+      testDetect('test.html', 'text/html', 'text/html', 'text/html');
+      testDetect('test_html4.html', 'text/html', 'text/html', 'text/html');
       // Freedesktop uses text/x-tex; Tika uses application/x-tex. Tika wins
       // (primary) so both glob and magic return application/x-tex.
       testDetect(
@@ -421,18 +397,17 @@ void _detectTests() {
           'text/x-csharp',
           dirOverride: 'programming/csharp',
         );
-        // Tika maps *.rs to application/rls-services+xml (wrong) which outranks
-        // Freedesktop's text/rust in the merged glob priority order.
+        // The override registry corrects Tika's wrong *.rs mapping
+        // (application/rls-services+xml) with a text/rust entry at weight 60,
+        // which beats both registries' weight-50 entries. The override
+        // short-circuits before the blended registry is consulted for glob and
+        // full detection; magic falls through to the blended result (text/x-csrc).
         testDetect(
           'test.rs',
           'text/rust',
           'text/x-csrc',
           'text/rust',
           dirOverride: 'programming/rust',
-          skipGlob:
-              '*.rs mapped to application/rls-services+xml in Tika, outranking Freedesktop text/rust in merged glob results',
-          skipFull:
-              '*.rs mapped to application/rls-services+xml in Tika, outranking Freedesktop text/rust in merged glob results',
         );
         testDetect(
           'test.go',

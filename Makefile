@@ -5,7 +5,7 @@
 default: prepare format analyze license_check test
 .PHONY: default
 
-pre_commit: prepare format_check analyze license_check
+pre_commit: prepare format_check analyze license_check test
 .PHONY: pre_commit
 
 cicd: prepare format_check analyze license_check test
