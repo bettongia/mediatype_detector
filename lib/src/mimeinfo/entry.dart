@@ -24,13 +24,27 @@ import 'magic.dart';
 import 'match.dart';
 import 'xml.dart';
 
-/// A single entry in the MIME database, detailing rules and metadata for a specific media type.
+/// Full metadata and detection rules for a single media type.
+///
+/// Each entry corresponds to one `<mime-type>` element in the upstream MIME
+/// database XML. The generated files under `g/` construct these from the
+/// parsed database; hand-authored entries (e.g. in the override registry) are
+/// written directly in Dart.
 class RegistryEntry {
+  /// The canonical media type string, e.g. `text/plain` or `image/png`.
   final String mediaType;
   final List<IntlString> _comments;
+
+  /// A short acronym for the type, e.g. `PDF` for `application/pdf` (optional).
   final IntlString? acronym;
+
+  /// The expanded form of [acronym], e.g. `Portable Document Format` (optional).
   final IntlString? expandedAcronym;
+
+  /// A custom icon name for this type (optional).
   final IntlString? icon;
+
+  /// A generic fallback icon category, e.g. [GenericIcon.document] (optional).
   final GenericIcon? genericIcon;
 
   final List<String> _alias;
@@ -40,6 +54,11 @@ class RegistryEntry {
   final List<Magic> _magic;
   final List<RootXML> _rootXML;
 
+  /// Creates a registry entry for [mediaType].
+  ///
+  /// All parameters except [mediaType] are optional and default to empty.
+  /// At least one of [globs], [magic], or [rootXML] should be supplied for the
+  /// entry to participate in detection.
   const RegistryEntry({
     required this.mediaType,
     this.acronym,

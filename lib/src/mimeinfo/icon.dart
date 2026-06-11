@@ -12,7 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/// Standard FreeDesktop generic icon names.
+/// Standard Freedesktop generic icon category names.
+///
+/// Each value corresponds to a named icon in the Freedesktop icon theme
+/// specification (e.g. `image-x-generic`, `audio-x-generic`). Use [value]
+/// to get the string form, or [tryParse] to look up a value by string.
 enum GenericIcon {
   applicationXExecutable('application-x-executable'),
   audioXGeneric('audio-x-generic'),
@@ -34,9 +38,12 @@ enum GenericIcon {
   xOfficePresentation('x-office-presentation'),
   xOfficeSpreadsheet('x-office-spreadsheet');
 
+  /// The Freedesktop icon name string, e.g. `'image-x-generic'`.
   final String value;
   const GenericIcon(this.value);
 
+  /// Returns the [GenericIcon] whose [value] equals [value], or `null` if
+  /// none matches.
   static GenericIcon? tryParse(String value) {
     for (var icon in GenericIcon.values) {
       if (icon.value == value) {

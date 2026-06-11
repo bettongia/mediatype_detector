@@ -18,8 +18,17 @@ import 'dart:typed_data';
 import 'package:betto_common/collections.dart';
 import 'package:collection/collection.dart';
 
-/// Magic number match rule for identifying file types based on their contents.
+/// A magic-number rule that identifies a file type from its byte content.
+///
+/// Each [Magic] groups one or more [Match] conditions under a single
+/// [priority]. All conditions are evaluated; any match returns [priority] as
+/// a candidate score. The rule is satisfied when at least one [Match] (or
+/// its sub-match chain) succeeds.
 class Magic {
+  /// The confidence score returned when this rule matches (typically 50–80).
+  ///
+  /// Higher values indicate a stronger identification. Scores are compared
+  /// across rules to rank [MatchResult]s in the final [MatchList].
   final int priority;
   final List<Match> _matches;
 
@@ -37,8 +46,15 @@ class Magic {
           priority == other.priority &&
           const ListEquality().equals(_matches, other._matches);
 
+  /// The individual [Match] conditions that make up this rule.
   List<Match> get matches => UnmodifiableListView(_matches);
 
+  /// Evaluates this rule against [bytes] and returns a set of matching
+  /// priorities.
+  ///
+  /// Returns `{priority}` if any [Match] condition succeeds, or an empty set
+  /// if none do. Callers accumulate these sets across all rules to build the
+  /// full set of candidate priorities for a file.
   Set<int> match(Uint8List bytes) {
     final results = <int>{};
     for (final m in _matches) {
@@ -92,12 +108,31 @@ enum MatchType {
   String toString() => value;
 }
 
-/// A single match condition within a magic rule.
+/// A single byte-pattern condition within a [Magic] rule.
+///
+/// Checks for a specific byte sequence at a given [offset] within the file,
+/// optionally applying a [mask] before comparison. Sub-matches ([subMatches])
+/// form an OR group: the parent must match, then at least one sub-match must
+/// also match.
+///
+/// Use [Match.factory] to construct instances; it selects the correct
+/// subclass ([RegExpMatch], [MinShouldMatch], or the default [Match]).
 class Match {
+  /// The byte offset into the file, as `"N"` (exact) or `"N:M"` (range).
   final String offset;
+
+  /// The data type that determines how [value] is interpreted and compared.
   final MatchType type;
+
+  /// The value to match against, encoded per [type] (e.g. hex string, text).
   final String? value;
+
+  /// An optional bitmask applied to both the file bytes and [value] before
+  /// comparison, encoded as a hex string.
   final String? mask;
+
+  /// For [MatchType.minShouldMatch] rules: the minimum number of sub-matches
+  /// that must succeed.
   final int? minShouldMatch;
   final List<Match> _subMatches;
 
@@ -117,6 +152,13 @@ class Match {
        _valueBytes = value != null ? _valueToBytes(value, type) : Uint8List(0),
        _maskBytes = mask != null ? _hexToBytes(mask) : null;
 
+  /// Creates the appropriate [Match] subclass for the given parameters.
+  ///
+  /// - [MatchType.minShouldMatch] → [MinShouldMatch]
+  /// - [MatchType.regex] → [RegExpMatch]
+  /// - All others → base [Match]
+  ///
+  /// Throws [ArgumentError] if required fields are missing for the chosen type.
   factory Match.factory({
     required MatchType type,
     String? value,
@@ -153,8 +195,6 @@ class Match {
     );
   }
 
-  List<Match> get subMatches => UnmodifiableListView(_subMatches);
-
   @override
   int get hashCode => Object.hash(
     offset,
@@ -175,14 +215,14 @@ class Match {
           mask == other.mask &&
           const ListEquality().equals(_subMatches, other._subMatches);
 
-  /// Check if [bytes] matches this magic match rule.
+  /// Child conditions that form an OR group evaluated after this match succeeds.
+  List<Match> get subMatches => UnmodifiableListView(_subMatches);
+
+  /// Returns `true` if [bytes] satisfies this match condition.
   ///
-  /// Parses the [offset] (single value or `start:end` range), converts
-  /// [value] to bytes based on [type], optionally applies [mask], then
-  /// checks for a match at each candidate offset position.
-  ///
-  /// If this match succeeds and [subMatches] is non-empty, at least one
-  /// sub-match must also succeed (AND with parent, OR among children).
+  /// Checks the byte sequence at each position in the [offset] range, applying
+  /// [mask] if set. If the parent bytes match and [subMatches] is non-empty,
+  /// at least one sub-match must also succeed.
   bool matches(Uint8List bytes) {
     if (type == MatchType.stringignorecase) {
       // TODO: implement this
@@ -346,6 +386,8 @@ class Match {
   String toString() => jsonEncode(toMap());
 }
 
+/// A [Match] variant that requires at least [minShouldMatch] of its
+/// [subMatches] to succeed, used for Tika's `minShouldMatch` rules.
 class MinShouldMatch implements Match {
   @override
   final String offset;
@@ -427,11 +469,11 @@ class MinShouldMatch implements Match {
   }
 }
 
-/// Regular expression-based matching
+/// A [Match] variant that uses a regular expression instead of a byte pattern.
 ///
-/// Used in Apache Tike mimetypes. There does not appear to be a published
-/// DTD for the tika-mimetypes.xml file but `match` elements of `type=regex`
-/// appear to only feature the `offset` and `value` properties.
+/// Used by Tika's `tika-mimetypes.xml` for `<match type="regex">` elements.
+/// The [offset] and [value] (the regex pattern) are the only relevant fields;
+/// inline flags such as `(?i)`, `(?m)`, and `(?s)` are parsed and applied.
 class RegExpMatch implements Match {
   @override
   final String offset;
@@ -467,8 +509,7 @@ class RegExpMatch implements Match {
   List<Match> get subMatches => UnmodifiableListView(_subMatches);
 
   @override
-  /// Not used in this type of match
-  String? get mask => null;
+  String? get mask => null; // not used for regex matches
 
   @override
   int get hashCode => Object.hash(

@@ -18,6 +18,17 @@ import 'package:collection/collection.dart';
 
 import 'entry.dart' show RegistryEntry;
 
+/// The result of a [MimeInfoRegistry.detect] call.
+///
+/// Holds the raw per-strategy lists ([globMatches], [magicMatches],
+/// [rootXmlMatches]) and exposes a single merged view ([merged], [bestMatch])
+/// that applies the Freedesktop conflict-resolution rules:
+///
+/// 1. Root XML results are definitive — returned immediately when present.
+/// 2. Without magic, glob results are filtered to the most conservative
+///    (parent) type so that unconfirmed subtypes are not over-reported.
+/// 3. With magic, types confirmed by both magic and glob are ranked first
+///    ("doubly confirmed"), followed by parent-child filtering.
 class MatchList {
   final List<MatchResult> _globMatches;
   final List<MatchResult> _magicMatches;
@@ -35,22 +46,45 @@ class MatchList {
     _merged = _merge();
   }
 
+  /// Whether no media type could be determined (all strategy lists are empty).
   bool get isEmpty => _merged.isEmpty;
 
+  /// Raw glob-match results, ordered by glob weight descending.
+  ///
+  /// These are the unfiltered filename matches before conflict resolution.
+  /// Prefer [merged] or [bestMatch] for the final determination.
   Iterable<MatchResult> get globMatches => List.unmodifiable(_globMatches);
 
+  /// Raw magic-match results, ordered by priority descending.
+  ///
+  /// These are the unfiltered byte-pattern matches before conflict resolution.
+  /// Prefer [merged] or [bestMatch] for the final determination.
   Iterable<MatchResult> get magicMatches => List.unmodifiable(_magicMatches);
 
+  /// Raw root-XML match results, ordered by priority descending.
+  ///
+  /// Only populated when the file appears to be XML-based. When present, these
+  /// results are definitive and [merged] returns them directly.
   Iterable<MatchResult> get rootXmlMatches =>
       List.unmodifiable(_rootXmlMatches);
 
-  /// Candidate Media Types in descending priority order
+  /// All candidate media type strings from every strategy, deduplicated and
+  /// ordered by priority descending.
+  ///
+  /// Unlike [merged], this list is not filtered by conflict-resolution rules —
+  /// it is a flat union of all three strategy results. Use it to inspect every
+  /// type that matched, regardless of confidence.
   Iterable<String> get candidates => [
     ..._globMatches,
     ..._magicMatches,
     ..._rootXmlMatches,
   ].sortedBy((m) => m.priority).reversed.map((e) => e.mediaType).toSet();
 
+  /// All [MatchResult] objects from every strategy, deduplicated and ordered
+  /// by priority descending.
+  ///
+  /// Similar to [candidates] but returns full [MatchResult] objects rather than
+  /// plain strings. Not filtered by conflict-resolution rules.
   Iterable<MatchResult> get combined => [
     ..._globMatches,
     ..._magicMatches,
@@ -155,14 +189,27 @@ class MatchList {
     return uniqueResults.where((r) => keepSet.contains(r.mediaType)).toList();
   }
 
+  /// The conflict-resolved result list, ordered by confidence then priority.
+  ///
+  /// Applies the Freedesktop MIME-info specification's conflict-resolution
+  /// rules across the glob, magic, and root XML results. This is the primary
+  /// output of detection; [bestMatch] returns the first element's media type.
   List<MatchResult> get merged => List.unmodifiable(_merged);
 
+  /// The single best media type determination, or `null` if nothing matched.
+  ///
+  /// Equivalent to `merged.firstOrNull?.mediaType`. Use this when you only
+  /// need one answer and do not need to inspect confidence or alternatives.
   String? get bestMatch {
     return _merged.firstOrNull?.mediaType;
   }
 }
 
-/// Represents a successful match result for a file or stream.
+/// A single successful detection result for one media type.
+///
+/// Carries the matched [mediaType], its [priority] (higher = more specific),
+/// and supporting metadata used by [MatchList]'s conflict-resolution rules
+/// ([subclassOf], [hasMagic]).
 class MatchResult implements Comparable<MatchResult> {
   /// The priority of the match rule that succeeded (e.g., from magic or rootXML).
   ///
@@ -174,9 +221,18 @@ class MatchResult implements Comparable<MatchResult> {
   /// The underlying media type that was matched.
   String get mediaType => _entry.mediaType;
 
-  /// The parent media type.
+  /// The parent media type(s) of this type, as declared in the MIME database.
+  ///
+  /// Used by [MatchList]'s parent-child filtering rules to determine whether a
+  /// specific subtype (e.g. `application/vnd.oasis.opendocument.text`) can be
+  /// promoted over a generic parent type (e.g. `application/zip`) confirmed by
+  /// magic.
   List<String> get subclassOf => _entry.subclassOf;
 
+  /// Whether the underlying [RegistryEntry] declares any magic rules.
+  ///
+  /// Types without magic rules are extension-only; [MatchList] always retains
+  /// them regardless of what magic matching found.
   bool get hasMagic => _entry.magic.isNotEmpty;
 
   /// Creates a new [MatchResult] with the given [priority] and [mediaType].

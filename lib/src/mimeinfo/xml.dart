@@ -17,10 +17,20 @@ import 'dart:typed_data' show Uint8List;
 
 import 'package:xml/xml.dart';
 
-/// Represents an XML root element match rule for a media type.
+/// A root XML element match rule from the MIME database.
+///
+/// Matches a file by inspecting the namespace URI and/or local name of its
+/// root XML element. Either field may be `null` to act as a wildcard.
 class RootXML {
+  /// The expected XML namespace URI of the root element, or `null` to match
+  /// any namespace.
   final String? namespaceURI;
+
+  /// The expected local name of the root element, or `null` to match any
+  /// local name.
   final String? localName;
+
+  /// The confidence weight of this rule (typically 50).
   final int weight;
 
   const RootXML({
@@ -46,10 +56,11 @@ class RootXML {
     return name.local == localName && name.namespaceUri == namespaceURI;
   }
 
-  /// Check if the root element of the file at [filePath] matches this definition.
+  /// Returns `true` if the root element of [bytes] matches this rule.
   ///
-  /// This reads and parses the file. For batch operations, prefer
-  /// [matchesElement] with a pre-parsed [XmlName] to avoid repeated I/O.
+  /// Parses [bytes] as UTF-8 XML each call. For batch operations, prefer
+  /// [matchesElement] with a pre-parsed [XmlName] to avoid repeated parsing.
+  /// Returns `false` if [bytes] cannot be parsed as XML.
   bool matches(Uint8List bytes) {
     try {
       final document = XmlDocument.parse(utf8.decode(bytes));

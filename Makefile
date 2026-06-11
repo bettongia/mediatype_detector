@@ -30,10 +30,8 @@ analyze:
 
 
 test: test.log
-.PHONY: test
-
-test.log: lib/** test/**
 	dart test  | tee test.log
+.PHONY: test
 
 tests_all: test e2e_test
 .PHONY: tests_all
@@ -72,7 +70,7 @@ coverage:
 site/:
 	mkdir -p site
 
-site: styles site/index.html site/api/index.html coverage | site/
+site: styles site/index.html site/api/index.html site/spec.html coverage | site/
 .PHONY: site
 
 styles: site/styles/styles.css
@@ -81,8 +79,8 @@ styles: site/styles/styles.css
 site/index.html:  docs/index.md docs/.pandoc docs/template/header.html | site/
 	pandoc --defaults="docs/.pandoc" docs/index.md README.md -o "site/index.html";
 
-#site/spec.html:  docs/spec/*.md docs/spec/.pandoc docs/template/header.html | site/
-#	pandoc --defaults="docs/spec/.pandoc" --mathml docs/spec/*.md -o "site/spec.html";
+site/spec.html:  docs/spec/*.md docs/spec/.pandoc docs/template/header.html | site/
+	pandoc --defaults="docs/spec/.pandoc" --mathml docs/spec/*.md -o "site/spec.html";
 
 #site/roadmap.html: docs/roadmap/*.md docs/.pandoc docs/template/header.html | site/
 #	pandoc --defaults="docs/.pandoc" docs/roadmap/v*.md -o "site/roadmap.html";

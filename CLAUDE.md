@@ -40,7 +40,7 @@ programming language. Also replace `{{.Year}}` to match the current year.
 
 ```
 lib/
-  mediatype_detector.dart        # Public library entry point
+  betto_mediatype_detector.dart  # Public library entry point
   src/
     mediatype_detector_base.dart # Global registry singletons + top-level detect()
     mimeinfo/                    # Core domain: data model, detection logic, registry base
@@ -58,6 +58,9 @@ lib/
     tika_mimeinfo/
       registry.dart              # TikaMimeInfoRegistry (extends MimeInfoRegistry)
       g/                         # Generated Dart code from Apache Tika XML database
+    override_mimeinfo/
+      registry.dart              # OverrideMimeInfoRegistry (extends MimeInfoRegistry)
+      entries.dart               # Hand-authored correction entries (not generated)
 
 tool/
   mimeinfo.dart                  # Code-generation helpers (shared by both loaders)
@@ -67,8 +70,11 @@ tool/
   data/                          # Cached source XML databases (checked in)
 
 test/
+  detect_test.dart               # Integration tests for the blended detect() pipeline
   freedesktop_test.dart          # Full detection tests against the Freedesktop registry
   tika_test.dart                 # Full detection tests against the Tika registry
+  merge_dedup_test.dart          # Unit tests for _mergeResults() deduplication logic
+  custom_registry_test.dart      # Unit tests for the layered registry pipeline
   spot_test.dart                 # Targeted / spot-check tests
   data/                          # Real sample files organised by media type category
 
@@ -153,6 +159,18 @@ MIME-info spec's conflict-resolution rules (`_merge()`):
   ("doubly confirmed"), followed by the parent-child filtering rules in
   `match.dart`.
 
+The top-level `detect()` function runs a **layered registry pipeline** with
+short-circuit semantics — the first layer to return a non-empty `MatchList`
+wins:
+
+1. **Caller registry** — optional `MimeInfoRegistry? customRegistry` parameter.
+2. **Override registry** — `OverrideMimeInfoRegistry` backed by
+   `override_mimeinfo/entries.dart`; hand-authored corrections for known bad
+   upstream mappings (e.g. Tika's incorrect `*.rs` mapping).
+3. **Blended registry** — Tika + Freedesktop results merged by `_mergeResults()`,
+   which keeps the higher-priority duplicate (and on a tie, the entry with the
+   richer `subclassOf` chain).
+
 ### Key types
 
 | Type | Location | Role |
@@ -162,6 +180,7 @@ MIME-info spec's conflict-resolution rules (`_merge()`):
 | `MatchList` | `lib/src/mimeinfo/match.dart` | Result container; exposes `bestMatch`, `merged`, `candidates`, per-strategy lists |
 | `MatchResult` | `lib/src/mimeinfo/match.dart` | Single match: `mediaType`, `priority`, `subclassOf`, `hasMagic` |
 | `GlobIndex` | `lib/src/mimeinfo/glob_index.dart` | Fast extension index built once per registry instance |
+| `OverrideMimeInfoRegistry` | `lib/src/override_mimeinfo/registry.dart` | Hand-authored corrections; consulted before the blended registry |
 
 ### Database code generation
 

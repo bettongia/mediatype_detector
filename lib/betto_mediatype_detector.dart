@@ -12,9 +12,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/// Support for doing something awesome.
+/// Media type (MIME type) detection for Dart.
 ///
-/// More dartdocs go here.
+/// Identifies file formats from content bytes and/or filenames by merging the
+/// [Freedesktop.org Shared MIME-info Database](https://specifications.freedesktop.org/shared-mime-info/latest/)
+/// and the [Apache Tika](https://tika.apache.org/) database. Detection runs
+/// through a three-stage pipeline — glob matching, magic-number inspection, and
+/// root XML element matching — and applies the Freedesktop conflict-resolution
+/// rules to rank results.
+///
+/// ## Quick start
+///
+/// ```dart
+/// import 'package:betto_mediatype_detector/betto_mediatype_detector.dart';
+///
+/// final matches = detect(bytes: bytes, fileName: 'report.pdf');
+/// print(matches.bestMatch); // 'application/pdf'
+/// ```
+///
+/// ## Key types
+///
+/// - [detect] — top-level function; runs the full layered pipeline.
+/// - [MatchList] — detection result; exposes [MatchList.bestMatch] and per-strategy lists.
+/// - [MatchResult] — a single match with [MatchResult.mediaType] and [MatchResult.priority].
+/// - [MimeInfoRegistry] — abstract base; extend to build custom registries.
+/// - [RegistryEntry] — full metadata for one MIME type: globs, magic rules, comments, aliases.
 library;
 
 export 'src/mediatype_detector_base.dart';

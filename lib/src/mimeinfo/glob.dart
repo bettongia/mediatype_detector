@@ -16,10 +16,25 @@ import 'dart:convert';
 
 import 'package:glob/glob.dart' as glob_pattern;
 
-/// Represents a glob pattern match rule for file names.
+/// A filename glob pattern rule from the MIME database.
+///
+/// Each [Glob] maps a shell-style pattern (e.g. `*.png`, `*.tar.gz`) to its
+/// match weight. Higher-weight globs represent more specific or more
+/// authoritative mappings and win in conflict resolution.
 class Glob {
+  /// The shell-style glob pattern, e.g. `*.png` or `README*`.
   final String pattern;
+
+  /// The confidence weight of this glob rule (typically 50 or 80).
+  ///
+  /// Higher values indicate a stronger mapping. The Freedesktop spec defines
+  /// 50 as the default and 80 as a high-confidence override.
   final int weight;
+
+  /// Whether this pattern must be matched case-sensitively.
+  ///
+  /// Even when `false`, the effective case sensitivity can be raised to `true`
+  /// by the `caseSensitive` argument passed to [matches].
   final bool caseSensitive;
 
   const Glob({
@@ -43,12 +58,12 @@ class Glob {
   static final Map<Glob, glob_pattern.Glob> _cacheIgnoreCase = {};
   static final Map<Glob, glob_pattern.Glob> _cacheCaseSensitive = {};
 
-  /// Check if the given file name matches the glob pattern.
+  /// Returns `true` if [fileName] matches this glob pattern.
   ///
-  /// Note that caches are used to store the glob patterns. The caching is basic and
-  /// can grow to a maximum of [Registry._globIndex.length] * 2 entries (one each for case sensitive and insensitive).
-  ///
-  /// TODO: Consider LRU caching here
+  /// Case sensitivity is determined by the logical OR of [caseSensitive] and
+  /// [this.caseSensitive] — passing `true` forces case-sensitive matching even
+  /// when the pattern itself is marked case-insensitive. Compiled [RegExp]
+  /// objects are cached per [Glob] instance to avoid repeated parsing.
   bool matches(String fileName, {bool caseSensitive = false}) {
     final effectiveCaseSensitive = caseSensitive || this.caseSensitive;
 

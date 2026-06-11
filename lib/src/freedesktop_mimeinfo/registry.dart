@@ -14,7 +14,12 @@
 
 import 'package:betto_mediatype_detector/betto_mediatype_detector.dart';
 
-/// A registry of MIME types and their associated file extensions and magic numbers.
+/// A [MimeInfoRegistry] backed by the Freedesktop.org Shared MIME-info database.
+///
+/// The global singleton [freedesktopMimeInfoRegistry] is pre-loaded with the
+/// generated Freedesktop database. Use this class directly only when you need
+/// a separate instance (e.g. for testing with a custom entry map).
 class FreedesktopMimeInfoRegistry extends MimeInfoRegistry {
+  /// Creates a registry backed by [entries].
   FreedesktopMimeInfoRegistry(super.entries);
 }

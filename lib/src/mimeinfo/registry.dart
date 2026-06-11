@@ -21,9 +21,32 @@ import 'package:xml/xml.dart' show XmlDocument, XmlName;
 import 'base.dart' show MatchList, MatchResult, RegistryEntry;
 import 'glob_index.dart' show GlobIndex;
 
+/// A map from canonical media type string to its list of [RegistryEntry]
+/// instances (typically one per type, but may be more when a type has multiple
+/// independent glob/magic/rootXML rule sets).
 typedef Registry = Map<String, List<RegistryEntry>>;
+
+/// An empty [Registry], useful as a placeholder when the generated database
+/// files need to be regenerated from scratch. See `mediatype_detector_base.dart`
+/// for the swap-in instructions.
 const Registry emptyRegistry = {};
 
+/// Abstract base for a MIME type registry.
+///
+/// Owns the detection pipeline ([detect]), plus the individual strategy methods
+/// ([matchGlob], [matchMagic], [matchRootXML]) that callers can invoke
+/// directly when they only need one stage.
+///
+/// The two bundled concrete registries ([TikaMimeInfoRegistry],
+/// [FreedesktopMimeInfoRegistry]) extend this class with their generated
+/// databases. To build a custom registry, extend this class and pass your own
+/// [Registry] map to the constructor.
+///
+/// ```dart
+/// class MyRegistry extends MimeInfoRegistry {
+///   MyRegistry() : super(const {'text/x-myformat': [...]});
+/// }
+/// ```
 abstract class MimeInfoRegistry {
   final Map<String, List<RegistryEntry>> _entries;
 
@@ -45,6 +68,11 @@ abstract class MimeInfoRegistry {
   }
 
   Iterable<RegistryEntry> _flattenedEntries = [];
+
+  /// All [RegistryEntry] instances in the registry as a flat iterable.
+  ///
+  /// Lazily built on first access and cached. Used internally by [matchMagic]
+  /// and [matchRootXML], which must scan every entry.
   Iterable<RegistryEntry> get flattenedEntries {
     if (_flattenedEntries.isEmpty) {
       _flattenedEntries = _entries.values.flattened;
@@ -56,26 +84,20 @@ abstract class MimeInfoRegistry {
   @override
   String toString() => jsonEncode(toMap());
 
-  /// Determine the possible media types for the file
+  /// Detects the media type of a file using all three strategies.
   ///
-  /// Providing [bytes] allows for checking magic numbers in the file
-  /// [fileName] is used to check the file extension against known globs
+  /// Pass [bytes] for magic and root XML matching, [fileName] for glob
+  /// matching, or both for the highest-confidence result. [fileName] must be a
+  /// bare filename (e.g. `document.pdf`), not a full path — extract the
+  /// basename with `path.basename` before calling if needed.
   ///
-  /// If [bytes] is empty, only a file extension check is used.
+  /// Per the Freedesktop shared-mime-info specification:
+  /// - Root XML results are definitive when present.
+  /// - Magic results take precedence over glob results.
+  /// - A type confirmed by both magic and glob is promoted to the top.
   ///
-  /// This method expects a [fileName] (e.g., `document.pdf`) rather than a full
-  /// file path containing directory separators. Providing a path with
-  /// directory components will likely result in no matches being found. For
-  /// full file paths, consider using [identify] or extracting the filename
-  /// first using `path.basename`.
-  ///
-  /// Per the FreeDesktop shared-mime-info specification:
-  /// - If magic matches are found, they take precedence over glob matches.
-  /// - If a magic match confirms a glob match (i.e. the same type appears in
-  ///   both), that result is promoted to the top.
-  /// - Root XML matches refine XML-based types further.
-  ///
-  /// A list of [MatchResult]s is returned, ordered by priority descending
+  /// Returns a [MatchList] containing per-strategy results and a
+  /// conflict-resolved [MatchList.merged] list.
   MatchList detect({
     Uint8List? bytes,
     String? fileName,
@@ -113,6 +135,12 @@ abstract class MimeInfoRegistry {
   /// Whether the registry contains an entry for the given [mediaType] string.
   bool contains(String mediaType) => _entries.containsKey(mediaType);
 
+  /// Returns `true` if the current glob or magic results suggest an XML-based
+  /// format, indicating that [matchRootXML] should be run.
+  ///
+  /// A file is considered likely XML when any match declares a media type
+  /// whose subtype ends in `+xml`, whose top-level type is `xml`, or which
+  /// is a subclass of `application/xml`.
   bool isLikelyXml(
     List<MatchResult>? globMatches,
     List<MatchResult>? magicMatches,
@@ -133,20 +161,13 @@ abstract class MimeInfoRegistry {
         (magicMatches?.any((m) => isXml(m.mediaType)) ?? false));
   }
 
-  /// Search through the database to find a match for the given file name.
+  /// Returns all media types whose glob patterns match [fileName], ordered by
+  /// weight descending.
   ///
-  /// This method expects a file name (e.g., `document.pdf`) rather than a full
-  /// file path containing directory separators. Providing a path with
-  /// directory components will likely result in no matches being found. For
-  /// full file paths, consider using [identify] or extracting the filename
-  /// first using `path.basename`.
-  ///
-  /// Simple `*.ext` patterns are looked up via a pre-built extension index in
-  /// O(1). Complex patterns (e.g. `README*`, `*.tar.gz`) are checked via a
-  /// linear scan of only the entries that have such patterns.
-  ///
-  /// Returns a list of media types that match the given file name, ordered by descending weight.
-  /// Duplicate matches are removed.
+  /// [fileName] must be a bare filename (e.g. `document.pdf`), not a full
+  /// path. Simple `*.ext` patterns are resolved via a pre-built extension
+  /// index in O(1); complex patterns (e.g. `README*`, `*.tar.gz`) are checked
+  /// with a linear scan. Duplicate types are removed.
   List<MatchResult> matchGlob(String fileName, {bool caseSensitive = false}) {
     final matches = <MatchResult>[];
 
@@ -196,10 +217,8 @@ abstract class MimeInfoRegistry {
     return matches.toSet().toList();
   }
 
-  /// Search through the database to find a match for the given byte stream.
-  ///
-  /// Returns a list of media types that match the given byte stream, ordered by descending priority.
-  /// Duplicate matches are removed.
+  /// Returns all media types whose magic rules match [bytes], ordered by
+  /// priority descending. Duplicate types are removed.
   List<MatchResult> matchMagic(Uint8List bytes) {
     final matches = <MatchResult>[];
     for (final entry in flattenedEntries) {
@@ -209,13 +228,12 @@ abstract class MimeInfoRegistry {
     return matches.toSet().toList();
   }
 
-  /// Search through the database to find a match for the given XML file by examining its root element.
+  /// Returns all media types whose root XML rules match the root element of
+  /// [bytes], ordered by priority descending.
   ///
-  /// The file is read and parsed once. The parsed root element is then checked
-  /// against all registered [RootXML] rules.
-  ///
-  /// Returns a list of media types that match the given file's root XML element, ordered by descending priority.
-  /// Duplicate matches are removed.
+  /// [bytes] is parsed as UTF-8 XML once; the root element's local name and
+  /// namespace are checked against every registered [RootXML] rule. Returns an
+  /// empty list if [bytes] cannot be parsed as XML. Duplicate types are removed.
   List<MatchResult> matchRootXML(Uint8List bytes) {
     // Parse the XML file once at this level.
     final XmlName rootName;
