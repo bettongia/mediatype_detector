@@ -1,0 +1,28 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+
+      - name: Install system dependencies
+        run: sudo apt-get update && sudo apt-get install -y lcov
+
+      - name: Install addlicense
+        run: |
+          go install github.com/google/addlicense@latest
+          echo "$HOME/go/bin" >> "$GITHUB_PATH"
+
+      - run: make cicd

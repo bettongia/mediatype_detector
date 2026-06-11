@@ -15,7 +15,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:betto_mediatype_detector/mediatype_detector.dart';
+import 'package:betto_mediatype_detector/betto_mediatype_detector.dart';
 import 'package:test/test.dart';
 
 void main() {

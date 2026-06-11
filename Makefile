@@ -2,13 +2,13 @@
 
 # BEGIN: Primary tasks
 
-default: format analyze checks site
+default: format analyze license_check test
 .PHONY: default
 
 pre_commit: format_check analyze license_check
 .PHONY: pre_commit
 
-cicd: default
+cicd: format_check analyze license_check test
 .PHONY: cicd
 
 # END: Primary tasks
@@ -21,15 +21,13 @@ format:
 ## used by the pre-commit hook so the commit is blocked (rather than silently
 ## reformatting already-staged files). Mirrors `format`'s scope exactly.
 format_check:
-	dart format --output=none --set-exit-if-changed packages
+	dart format --output=none --set-exit-if-changed lib test
 .PHONY: format_check
 
 analyze:
 	dart analyze
 .PHONY: analyze
 
-checks: coverage.log license_check
-.PHONY: checks
 
 test: test.log
 .PHONY: test

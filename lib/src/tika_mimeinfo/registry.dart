@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import 'package:betto_mediatype_detector/mediatype_detector.dart';
+import 'package:betto_mediatype_detector/betto_mediatype_detector.dart';
 
 /// A registry of MIME types and their associated file extensions and magic numbers.
 class TikaMimeInfoRegistry extends MimeInfoRegistry {

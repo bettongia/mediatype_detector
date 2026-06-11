@@ -21,7 +21,7 @@
 // import 'package:betto_mediatype_detector/mediatype_detector.dart';
 
 import 'package:betto_common/string.dart';
-import 'package:betto_mediatype_detector/mediatype_detector.dart';
+import 'package:betto_mediatype_detector/betto_mediatype_detector.dart';
 import 'package:meta/meta.dart';
 
 @internal

@@ -16,7 +16,7 @@ import 'dart:convert';
 import 'dart:io' show exit;
 import 'dart:typed_data';
 
-import 'package:betto_mediatype_detector/mediatype_detector.dart';
+import 'package:betto_mediatype_detector/betto_mediatype_detector.dart';
 
 /// A simple application that identifies the media type of a file-like string
 /// based on its name using the FreeDesktop shared-mime-info registry.

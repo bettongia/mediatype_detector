@@ -17,7 +17,8 @@
 import 'dart:io';
 import 'dart:typed_data' show Uint8List;
 
-import 'package:betto_mediatype_detector/mediatype_detector.dart' show detect;
+import 'package:betto_mediatype_detector/betto_mediatype_detector.dart'
+    show detect;
 import 'package:path/path.dart' as p;
 
 /// A simple CLI application that identifies the media type of a file
