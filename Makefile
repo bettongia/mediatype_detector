@@ -8,7 +8,7 @@ default: prepare format analyze license_check test
 pre_commit: prepare format_check analyze license_check test
 .PHONY: pre_commit
 
-cicd: prepare format_check analyze license_check test
+cicd: prepare format_check analyze license_check test coverage_check
 .PHONY: cicd
 
 # END: Primary tasks
@@ -65,6 +65,17 @@ coverage:
 	mkdir -p site/coverage
 	genhtml coverage/lcov.filtered.info -o site/coverage
 .PHONY: coverage
+
+## Run tests with coverage and fail if hand-written code falls below 90%.
+## Excludes generated /g/ files from the threshold calculation.
+coverage_check:
+	dart test --coverage-path=coverage/lcov.info
+	lcov --remove coverage/lcov.info '*/g/*' --output-file coverage/lcov.filtered.info
+	@set -e; \
+	pct=$$(lcov --summary coverage/lcov.filtered.info 2>&1 | grep 'lines\.\.\.' | awk '{print $$2}' | tr -d '%'); \
+	echo "Coverage: $${pct}%"; \
+	awk "BEGIN { if ($${pct} < 90) { print \"FAIL: $${pct}% is below the 90% threshold\"; exit 1 } }"
+.PHONY: coverage_check
 
 # BEGIN: Documentation site tasks
 site/:
