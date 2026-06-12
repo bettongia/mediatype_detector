@@ -8,7 +8,7 @@ default: prepare format analyze license_check test
 pre_commit: prepare format_check analyze license_check test
 .PHONY: pre_commit
 
-cicd: prepare format_check analyze license_check test coverage_check
+cicd: prepare format_check analyze license_check coverage_check
 .PHONY: cicd
 
 # END: Primary tasks
