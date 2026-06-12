@@ -169,7 +169,11 @@ class Match {
   }) {
     if (type == MatchType.minShouldMatch || minShouldMatch != null) {
       if (minShouldMatch != null) {
-        return MinShouldMatch(offset: offset, minShouldMatch: minShouldMatch);
+        return MinShouldMatch(
+          offset: offset,
+          minShouldMatch: minShouldMatch,
+          subMatches: subMatches,
+        );
       }
       throw ArgumentError.notNull('minShouldMatch');
     }
@@ -224,19 +228,18 @@ class Match {
   /// [mask] if set. If the parent bytes match and [subMatches] is non-empty,
   /// at least one sub-match must also succeed.
   bool matches(Uint8List bytes) {
-    if (type == MatchType.stringignorecase) {
-      // TODO: implement this
-      return false;
-    }
-
     if (_valueBytes.isEmpty) return false;
 
     final (startOffset, endOffset) = _parsedOffset;
     final rangeEnd = endOffset ?? startOffset;
+    final compareFn = type == MatchType.stringignorecase
+        ? _matchesAtIgnoreCase
+        : _matchesAt;
+
     for (var pos = startOffset; pos <= rangeEnd; pos++) {
       if (pos + _valueBytes.length > bytes.length) break;
 
-      if (_matchesAt(bytes, pos, _valueBytes, _maskBytes)) {
+      if (compareFn(bytes, pos, _valueBytes, _maskBytes)) {
         // If there are sub-matches, at least one must also match (OR).
         if (_subMatches.isEmpty) return true;
         for (final sub in _subMatches) {
@@ -269,6 +272,29 @@ class Match {
     return true;
   }
 
+  /// Compare [valueBytes] against [bytes] at [position] using ASCII
+  /// case-insensitive comparison. [valueBytes] must already be lowercased
+  /// (as produced by [_valueToBytes] for [MatchType.stringignorecase]).
+  static bool _matchesAtIgnoreCase(
+    Uint8List bytes,
+    int position,
+    Uint8List valueBytes,
+    Uint8List? maskBytes,
+  ) {
+    for (var i = 0; i < valueBytes.length; i++) {
+      var fileByte = bytes[position + i];
+      var valueByte = valueBytes[i];
+      if (maskBytes != null && i < maskBytes.length) {
+        fileByte &= maskBytes[i];
+        valueByte &= maskBytes[i];
+      }
+      // ASCII case-fold A–Z → a–z.
+      if (fileByte >= 0x41 && fileByte <= 0x5A) fileByte |= 0x20;
+      if (fileByte != valueByte) return false;
+    }
+    return true;
+  }
+
   /// Parse an offset string: "N" returns (N, null), "N:M" returns (N, M).
   static (int, int?) _parseOffset(String offset) {
     final parts = offset.split(':');
@@ -286,7 +312,15 @@ class Match {
         }
         return Uint8List.fromList(value.codeUnits);
       case MatchType.stringignorecase:
-        return Uint8List(0);
+        // Parse identically to `string`, then ASCII-lowercase the pattern so
+        // _matchesAtIgnoreCase only needs to fold the file bytes.
+        final raw = (value.startsWith('0x') || value.startsWith('0X'))
+            ? _hexToBytes(value)
+            : Uint8List.fromList(value.codeUnits);
+        for (var i = 0; i < raw.length; i++) {
+          if (raw[i] >= 0x41 && raw[i] <= 0x5A) raw[i] |= 0x20;
+        }
+        return raw;
       case MatchType.byte:
         return Uint8List.fromList(value.codeUnits);
 
@@ -419,16 +453,13 @@ class MinShouldMatch implements Match {
 
   @override
   bool matches(Uint8List bytes) {
-    int matchFlag = 0;
-    for (int i = 0; i < minShouldMatch; i++) {
-      for (final sub in _subMatches) {
-        if (sub.matches(bytes)) matchFlag++;
-        if (matchFlag >= minShouldMatch) {
-          return true;
-        }
+    int count = 0;
+    for (final sub in _subMatches) {
+      if (sub.matches(bytes)) {
+        count++;
+        if (count >= minShouldMatch) return true;
       }
     }
-
     return false;
   }
 
