@@ -2,7 +2,7 @@ name: betto_mediatype_detector
 description:
   A Dart package for identifying media types (MIME types) from file content and
   filenames.
-version: 0.1.0-dev.1
+version: 0.1.0-dev.2
 repository: https://github.com/bettongia/mediatype_detector
 homepage: https://github.com/bettongia/mediatype_detector
 issue_tracker: https://github.com/bettongia/mediatype_detector/issues

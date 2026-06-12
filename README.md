@@ -170,29 +170,29 @@ dart run betto_mediatype_detector:detect path/to/file
 
 ## API overview
 
-| Symbol | Description |
-| --- | --- |
-| `detect({bytes, fileName, caseSensitive, customRegistry})` | Top-level function; runs the layered pipeline (custom → override → blended) |
-| `freedesktopMimeInfoRegistry` | Global Freedesktop MIME database registry |
-| `tikaMimeInfoRegistry` | Global Apache Tika MIME database registry |
-| `overrideMimeInfoRegistry` | Built-in override registry for upstream corrections |
-| `OverrideMimeInfoRegistry` | Subclass backing the override registry; extend or instantiate with custom entries |
-| `MimeInfoRegistry` | Abstract base class; extend to build custom registries |
-| `MatchList` | Returned by `detect`; exposes `bestMatch`, `merged`, `candidates`, `globMatches`, `magicMatches`, `rootXmlMatches` |
-| `MatchResult` | A single match: `mediaType`, `priority`, `subclassOf`, `hasMagic` |
-| `RegistryEntry` | Full metadata for a MIME type: globs, magic rules, comments, aliases, icons |
+| Symbol                                                     | Description                                                                                                        |
+| ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `detect({bytes, fileName, caseSensitive, customRegistry})` | Top-level function; runs the layered pipeline (custom → override → blended)                                        |
+| `freedesktopMimeInfoRegistry`                              | Global Freedesktop MIME database registry                                                                          |
+| `tikaMimeInfoRegistry`                                     | Global Apache Tika MIME database registry                                                                          |
+| `overrideMimeInfoRegistry`                                 | Built-in override registry for upstream corrections                                                                |
+| `OverrideMimeInfoRegistry`                                 | Subclass backing the override registry; extend or instantiate with custom entries                                  |
+| `MimeInfoRegistry`                                         | Abstract base class; extend to build custom registries                                                             |
+| `MatchList`                                                | Returned by `detect`; exposes `bestMatch`, `merged`, `candidates`, `globMatches`, `magicMatches`, `rootXmlMatches` |
+| `MatchResult`                                              | A single match: `mediaType`, `priority`, `subclassOf`, `hasMagic`                                                  |
+| `RegistryEntry`                                            | Full metadata for a MIME type: globs, magic rules, comments, aliases, icons                                        |
 
 ## License
 
 This package is licensed under the Apache License 2.0. See the
 [LICENSE](LICENSE) file for details.
 
-The bundled [Apache Tika](https://tika.apache.org/) MIME database is copyright
-2011 The Apache Software Foundation and is distributed under the Apache License
-2.0. See https://www.apache.org/licenses/LICENSE-2.0 for details.
+The [Apache Tika](https://tika.apache.org/) MIME database is copyright 2011 The
+Apache Software Foundation and is distributed under the Apache License 2.0. See
+https://www.apache.org/licenses/LICENSE-2.0 for details.
 
-The bundled Freedesktop.org Shared MIME database is distributed under the GNU
-General Public License version 2 or later:
+The Freedesktop.org Shared MIME database is distributed under the GNU General
+Public License version 2 or later:
 
 > The freedesktop.org shared MIME database was created by merging several
 > existing MIME databases (all released under the GNU GPL). It comes with
