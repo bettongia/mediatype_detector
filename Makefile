@@ -60,9 +60,10 @@ license_add:
 
 coverage:
 	dart test --coverage-path=coverage/lcov.info
+	lcov --remove coverage/lcov.info '*/g/*' --output-file coverage/lcov.filtered.info
 	rm -rf site/coverage
 	mkdir -p site/coverage
-	genhtml coverage/lcov.info -o site/coverage
+	genhtml coverage/lcov.filtered.info -o site/coverage
 .PHONY: coverage
 
 # BEGIN: Documentation site tasks

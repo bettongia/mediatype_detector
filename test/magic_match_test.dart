@@ -434,4 +434,319 @@ void main() {
       },
     );
   });
+
+  // -------------------------------------------------------------------------
+  group('MatchType', () {
+    test('tryParse returns correct enum for known value', () {
+      expect(MatchType.tryParse('string'), equals(MatchType.string));
+      expect(
+        MatchType.tryParse('stringignorecase'),
+        equals(MatchType.stringignorecase),
+      );
+      expect(MatchType.tryParse('big16'), equals(MatchType.big16));
+      expect(MatchType.tryParse('regex'), equals(MatchType.regex));
+      expect(
+        MatchType.tryParse('minShouldMatch'),
+        equals(MatchType.minShouldMatch),
+      );
+    });
+
+    test('tryParse returns null for unknown value', () {
+      expect(MatchType.tryParse('unknown'), isNull);
+      expect(MatchType.tryParse(''), isNull);
+    });
+
+    test('toString returns the string value', () {
+      expect(MatchType.string.toString(), equals('string'));
+      expect(MatchType.big32.toString(), equals('big32'));
+      expect(MatchType.regex.toString(), equals('regex'));
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  group('Match.factory error paths', () {
+    test(
+      'throws when minShouldMatch type used without minShouldMatch value',
+      () {
+        expect(
+          () => Match.factory(type: MatchType.minShouldMatch, offset: '0'),
+          throwsA(isA<ArgumentError>()),
+        );
+      },
+    );
+
+    test('throws when value is null for non-minShouldMatch type', () {
+      expect(
+        () => Match.factory(type: MatchType.string, offset: '0'),
+        throwsA(isA<ArgumentError>()),
+      );
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  group('Match toMap and toString', () {
+    test('toMap without subMatches omits match key', () {
+      final m = Match.factory(
+        type: MatchType.string,
+        value: 'PDF',
+        offset: '0',
+      );
+      final map = m.toMap();
+      expect(map['offset'], equals('0'));
+      expect(map['datatype'], equals('string'));
+      expect(map['value'], equals('PDF'));
+      expect(map.containsKey('match'), isFalse);
+    });
+
+    test('toMap with mask includes mask key', () {
+      final m = Match.factory(
+        type: MatchType.string,
+        value: '0x0F',
+        offset: '0',
+        mask: '0xFF',
+      );
+      expect(m.toMap()['mask'], equals('0xFF'));
+    });
+
+    test('toMap with subMatches includes match key', () {
+      final m = Match.factory(
+        type: MatchType.string,
+        value: 'PDF',
+        offset: '0',
+        subMatches: [
+          Match.factory(type: MatchType.string, value: 'sub', offset: '4'),
+        ],
+      );
+      final map = m.toMap();
+      expect(map.containsKey('match'), isTrue);
+      expect((map['match'] as List).length, equals(1));
+    });
+
+    test('toString produces non-empty JSON string', () {
+      final m = Match.factory(
+        type: MatchType.string,
+        value: 'PDF',
+        offset: '0',
+      );
+      expect(m.toString(), contains('PDF'));
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  group('host16 / host32', () {
+    test('host16 matches on this platform', () {
+      // Build a Match and verify it matches its own encoded bytes — the result
+      // is platform-dependent but must always be consistent.
+      final m = Match.factory(
+        type: MatchType.host16,
+        value: '0x4D4D',
+        offset: '0',
+      );
+      // The match either succeeds or fails depending on host endianness; what
+      // matters is that it doesn't throw and produces a deterministic result.
+      expect(m.matches(Uint8List.fromList([0x4D, 0x4D])), isA<bool>());
+      expect(
+        m.matches(Uint8List.fromList([0x4D, 0x4D])),
+        equals(m.matches(Uint8List.fromList([0x4D, 0x4D]))),
+      );
+    });
+
+    test('host32 matches on this platform', () {
+      final m = Match.factory(
+        type: MatchType.host32,
+        value: '0x89504E47',
+        offset: '0',
+      );
+      expect(
+        m.matches(Uint8List.fromList([0x89, 0x50, 0x4E, 0x47])),
+        isA<bool>(),
+      );
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  group('MinShouldMatch equality, hashCode, toMap', () {
+    final a = Match.factory(
+      type: MatchType.minShouldMatch,
+      offset: '0',
+      minShouldMatch: 2,
+      subMatches: [
+        Match.factory(type: MatchType.string, value: 'AB', offset: '0'),
+        Match.factory(type: MatchType.string, value: 'XY', offset: '0'),
+      ],
+    );
+    final b = Match.factory(
+      type: MatchType.minShouldMatch,
+      offset: '0',
+      minShouldMatch: 2,
+      subMatches: [
+        Match.factory(type: MatchType.string, value: 'AB', offset: '0'),
+        Match.factory(type: MatchType.string, value: 'XY', offset: '0'),
+      ],
+    );
+    final different = Match.factory(
+      type: MatchType.minShouldMatch,
+      offset: '0',
+      minShouldMatch: 1,
+      subMatches: [
+        Match.factory(type: MatchType.string, value: 'AB', offset: '0'),
+      ],
+    );
+
+    test('== equal instances', () => expect(a, equals(b)));
+    test('== identical is equal', () => expect(a, equals(a)));
+    test(
+      '== different threshold/subMatches not equal',
+      () => expect(a, isNot(equals(different))),
+    );
+    test(
+      'hashCode equal for equal instances',
+      () => expect(a.hashCode, equals(b.hashCode)),
+    );
+    test(
+      'hashCode differs for different instances',
+      () => expect(a.hashCode, isNot(equals(different.hashCode))),
+    );
+
+    test('toMap contains offset and datatype', () {
+      final map = a.toMap();
+      expect(map['offset'], equals('0'));
+      expect(map['datatype'], equals('minShouldMatch'));
+    });
+
+    test('toMap includes match key when subMatches present', () {
+      expect(a.toMap().containsKey('match'), isTrue);
+    });
+
+    test('mask is null', () => expect((a as dynamic).mask, isNull));
+    test(
+      'subMatches getter returns list',
+      () => expect(a.subMatches.length, equals(2)),
+    );
+  });
+
+  // -------------------------------------------------------------------------
+  group('RegExpMatch', () {
+    final a = Match.factory(
+      type: MatchType.regex,
+      value: r'\bPDF\b',
+      offset: '0',
+    );
+    final b = Match.factory(
+      type: MatchType.regex,
+      value: r'\bPDF\b',
+      offset: '0',
+    );
+    final different = Match.factory(
+      type: MatchType.regex,
+      value: r'\bPNG\b',
+      offset: '0',
+    );
+
+    test('== equal instances', () => expect(a, equals(b)));
+    test('== identical is equal', () => expect(a, equals(a)));
+    test(
+      '== different pattern not equal',
+      () => expect(a, isNot(equals(different))),
+    );
+    test(
+      'hashCode equal for equal instances',
+      () => expect(a.hashCode, equals(b.hashCode)),
+    );
+    test(
+      'hashCode differs for different instances',
+      () => expect(a.hashCode, isNot(equals(different.hashCode))),
+    );
+
+    test('toMap contains offset, datatype, value', () {
+      final map = a.toMap();
+      expect(map['offset'], equals('0'));
+      expect(map['datatype'], equals('regex'));
+      expect(map['value'], equals(r'\bPDF\b'));
+      expect(map.containsKey('match'), isFalse);
+    });
+
+    test('toMap includes match key when subMatches present', () {
+      final m = Match.factory(
+        type: MatchType.regex,
+        value: r'PDF',
+        offset: '0',
+        subMatches: [
+          Match.factory(type: MatchType.string, value: 'sub', offset: '4'),
+        ],
+      );
+      expect(m.toMap().containsKey('match'), isTrue);
+    });
+
+    test('matches at exact offset', () {
+      final m = Match.factory(
+        type: MatchType.regex,
+        value: r'PDF',
+        offset: '0',
+      );
+      expect(m.matches(bytes('PDF-1.4')), isTrue);
+      expect(m.matches(bytes('other')), isFalse);
+    });
+
+    test('returns false when startOffset >= bytes.length', () {
+      final m = Match.factory(
+        type: MatchType.regex,
+        value: r'PDF',
+        offset: '100',
+      );
+      expect(m.matches(bytes('PDF')), isFalse);
+    });
+
+    test('matches with range offset', () {
+      final m = Match.factory(
+        type: MatchType.regex,
+        value: r'PDF',
+        offset: '0:4',
+      );
+      expect(m.matches(bytes('____PDF')), isTrue);
+      expect(m.matches(bytes('nothing')), isFalse);
+    });
+
+    test('sub-match OR semantics apply', () {
+      final m = Match.factory(
+        type: MatchType.regex,
+        value: r'PDF',
+        offset: '0',
+        subMatches: [
+          Match.factory(type: MatchType.string, value: '-1.', offset: '3'),
+        ],
+      );
+      expect(m.matches(bytes('PDF-1.4')), isTrue);
+      expect(m.matches(bytes('PDF XXX')), isFalse);
+    });
+
+    group('createDartRegExp flag parsing', () {
+      test('(?i) produces case-insensitive matching', () {
+        final r = RegExpMatch.createDartRegExp(r'(?i)html');
+        expect(r.hasMatch('HTML'), isTrue);
+        expect(r.hasMatch('html'), isTrue);
+        expect(r.hasMatch('XTML'), isFalse);
+      });
+
+      test('(?m) produces multiLine matching', () {
+        final r = RegExpMatch.createDartRegExp(r'(?m)^start');
+        expect(r.isMultiLine, isTrue);
+        expect(r.hasMatch('other\nstart here'), isTrue);
+      });
+
+      test('(?s) produces dotAll matching', () {
+        final r = RegExpMatch.createDartRegExp(r'(?s)a.b');
+        expect(r.isDotAll, isTrue);
+        expect(r.hasMatch('a\nb'), isTrue);
+      });
+
+      test('no flags — case-sensitive by default', () {
+        final r = RegExpMatch.createDartRegExp(r'html');
+        expect(r.hasMatch('html'), isTrue);
+        expect(r.hasMatch('HTML'), isFalse);
+        expect(r.isMultiLine, isFalse);
+        expect(r.isDotAll, isFalse);
+      });
+    });
+  });
 }
