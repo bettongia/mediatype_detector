@@ -20,3 +20,4 @@ coverage_run/test/freedesktop_test.dart.vm.json
 coverage_run/test/merge_dedup_test.dart.vm.json
 coverage_run/test/spot_test.dart.vm.json
 coverage_run/test/tika_test.dart.vm.json
+.DS_Store

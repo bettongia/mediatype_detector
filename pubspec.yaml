@@ -19,7 +19,6 @@ dependencies:
   betto_common: ^0.1.0-dev.1
   path: ^1.9.1
   meta: ^1.18.2
-  characters: ^1.4.1
   xml: ^7.0.1
   glob: ^2.1.3
 

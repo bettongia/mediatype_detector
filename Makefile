@@ -5,7 +5,7 @@
 default: prepare format analyze license_check test
 .PHONY: default
 
-pre_commit: prepare format_check analyze license_check test
+pre_commit: prepare format_check analyze license_check coverage_check
 .PHONY: pre_commit
 
 cicd: prepare format_check analyze license_check coverage_check
@@ -41,7 +41,7 @@ e2e_test: e2e_test.log
 
 e2e_test.log: lib/** test/**
 
-load: loader_freedesktop_mimeinfo
+load: loader_freedesktop_mimeinfo loader_tika
 .PHONY: load
 
 loader_freedesktop_mimeinfo:
