@@ -80,7 +80,6 @@ test/
 
 bin/
   detect.dart                    # CLI entry point (dart run betto_mediatype_detector:detect)
-  main.dart
 
 example/                         # Usage examples
 ```
