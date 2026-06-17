@@ -14,6 +14,7 @@
 --ignore="**/*.txt"
 --ignore="**/.dart_tool/**"
 --ignore="doc/**"
+--ignore="docs/template/**"
 --ignore="coverage/**"
 --ignore="site/**"
 --ignore="vendor/**"

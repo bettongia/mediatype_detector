@@ -70,7 +70,7 @@ final overrideMimeInfoRegistry = OverrideMimeInfoRegistry(overrideDb);
 /// 3. **Blended registry** — the merged Tika + Freedesktop result. Merges
 ///    glob, magic, and root XML results from both databases across all three
 ///    detection stages. For duplicate media types the entry with the higher
-///    priority is kept; on a tie the entry with the richer [subclassOf] chain
+///    priority is kept; on a tie the entry with the richer [RegistryEntry.subclassOf] chain
 ///    is preferred so that parent-child resolution works correctly.
 ///
 /// Each layer uses short-circuit semantics: if a registry returns a non-empty

@@ -44,7 +44,7 @@ class RegistryEntry {
   /// A custom icon name for this type (optional).
   final IntlString? icon;
 
-  /// A generic fallback icon category, e.g. [GenericIcon.document] (optional).
+  /// A generic fallback icon category, e.g. [GenericIcon.xOfficeDocument] (optional).
   final GenericIcon? genericIcon;
 
   final List<String> _alias;

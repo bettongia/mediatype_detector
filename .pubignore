@@ -11,3 +11,4 @@ Makefile
 addlicense_config.txt
 tool/
 Claude.md
+site/

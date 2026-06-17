@@ -37,8 +37,8 @@ const Registry emptyRegistry = {};
 /// ([matchGlob], [matchMagic], [matchRootXML]) that callers can invoke
 /// directly when they only need one stage.
 ///
-/// The two bundled concrete registries ([TikaMimeInfoRegistry],
-/// [FreedesktopMimeInfoRegistry]) extend this class with their generated
+/// The two bundled concrete registries (`TikaMimeInfoRegistry`,
+/// `FreedesktopMimeInfoRegistry`) extend this class with their generated
 /// databases. To build a custom registry, extend this class and pass your own
 /// [Registry] map to the constructor.
 ///

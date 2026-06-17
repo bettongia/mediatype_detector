@@ -61,7 +61,7 @@ class Glob {
   /// Returns `true` if [fileName] matches this glob pattern.
   ///
   /// Case sensitivity is determined by the logical OR of [caseSensitive] and
-  /// [this.caseSensitive] — passing `true` forces case-sensitive matching even
+  /// [Glob.caseSensitive] — passing `true` forces case-sensitive matching even
   /// when the pattern itself is marked case-insensitive. Compiled [RegExp]
   /// objects are cached per [Glob] instance to avoid repeated parsing.
   bool matches(String fileName, {bool caseSensitive = false}) {
