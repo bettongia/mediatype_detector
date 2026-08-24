@@ -126,8 +126,7 @@ void registryTests(MimeInfoRegistry registry) {
         'application/xml',
         'application/xml',
         'application/xml',
-        skipGlob:
-            'application/owl+xml not in Tika registry (glob checked separately)',
+        skipGlob: 'application/owl+xml not in Tika registry (glob checked separately)',
       );
       testDetect(
         'test.json',
@@ -350,8 +349,7 @@ void registryTests(MimeInfoRegistry registry) {
           'text/plain',
           'application/vnd.dart',
           dirOverride: 'programming/dart',
-          skipGlob:
-              'application/vnd.dart not in Tika registry (glob checked separately)',
+          skipGlob: 'application/vnd.dart not in Tika registry (glob checked separately)',
           skipFull: 'application/vnd.dart not in Tika registry',
         );
         // Python: glob matches text/x-python; magic matches application/x-sh

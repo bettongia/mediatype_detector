@@ -351,8 +351,7 @@ final Registry mimeinfoDbVideo = {
               type: MatchType.string,
               offset: '0',
               value: 'OggS\x00.......................\x80daala',
-              mask:
-                  '0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFFFFFF',
+              mask: '0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFFFFFF',
               minShouldMatch: null,
             ),
           ],
@@ -373,8 +372,7 @@ final Registry mimeinfoDbVideo = {
               type: MatchType.string,
               offset: '0',
               value: 'OggS\x00.......................\x80theora',
-              mask:
-                  '0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFFFFFFFF',
+              mask: '0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFFFFFFFF',
               minShouldMatch: null,
             ),
           ],
@@ -396,8 +394,7 @@ final Registry mimeinfoDbVideo = {
               type: MatchType.string,
               offset: '0',
               value: 'OggS\x00.......................BBCD',
-              mask:
-                  '0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFF',
+              mask: '0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFF',
               minShouldMatch: null,
             ),
           ],
@@ -419,8 +416,7 @@ final Registry mimeinfoDbVideo = {
               type: MatchType.string,
               offset: '0',
               value: 'OggS\x00.......................video',
-              mask:
-                  '0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFFFF',
+              mask: '0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFFFF',
               minShouldMatch: null,
             ),
           ],
@@ -441,8 +437,7 @@ final Registry mimeinfoDbVideo = {
               type: MatchType.string,
               offset: '0',
               value: 'OggS\x00.......................UVS ',
-              mask:
-                  '0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFF',
+              mask: '0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFF',
               minShouldMatch: null,
             ),
           ],
@@ -463,8 +458,7 @@ final Registry mimeinfoDbVideo = {
               type: MatchType.string,
               offset: '0',
               value: 'OggS\x00.......................\x01YUV',
-              mask:
-                  '0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFF',
+              mask: '0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFF',
               minShouldMatch: null,
             ),
           ],
@@ -485,8 +479,7 @@ final Registry mimeinfoDbVideo = {
               type: MatchType.string,
               offset: '0',
               value: 'OggS\x00.......................\x01RGB',
-              mask:
-                  '0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFF',
+              mask: '0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFF',
               minShouldMatch: null,
             ),
           ],

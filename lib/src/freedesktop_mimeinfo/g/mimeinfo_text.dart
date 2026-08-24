@@ -1450,8 +1450,7 @@ final Registry mimeinfoDbText = {
             Match.factory(
               type: MatchType.string,
               offset: '0:256',
-              value:
-                  '#, fuzzy\nmsgid \\"\\"\nmsgstr \\"\\"\n\\"Project-Id-Version:',
+              value: '#, fuzzy\nmsgid \\"\\"\nmsgstr \\"\\"\n\\"Project-Id-Version:',
               mask: null,
               minShouldMatch: null,
             ),
@@ -1900,8 +1899,7 @@ final Registry mimeinfoDbText = {
             Match.factory(
               type: MatchType.string,
               offset: '0',
-              value:
-                  '\xff\xfeW\x00i\x00n\x00d\x00o\x00w\x00s\x00 \x00R\x00e\x00g\x00i\x00s\x00t\x00r\x00y\x00 \x00E\x00d\x00i\x00t\x00o\x00r\x00',
+              value: '\xff\xfeW\x00i\x00n\x00d\x00o\x00w\x00s\x00 \x00R\x00e\x00g\x00i\x00s\x00t\x00r\x00y\x00 \x00E\x00d\x00i\x00t\x00o\x00r\x00',
               mask: null,
               minShouldMatch: null,
             ),

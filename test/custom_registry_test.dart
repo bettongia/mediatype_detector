@@ -108,9 +108,8 @@ void main() {
     test(
       'full detection: *.rs resolves to text/rust via override registry',
       () {
-        final bytes = File(
-          'test/data/programming/rust/test.rs',
-        ).readAsBytesSync();
+        final bytes = File('test/data/programming/rust/test.rs')
+            .readAsBytesSync();
         final result = detect(fileName: 'test.rs', bytes: bytes);
         expect(result.bestMatch, equals('text/rust'));
       },
@@ -121,9 +120,8 @@ void main() {
       // Without a file name the override registry cannot match (it only
       // has globs, no magic). The blended registry's magic result should
       // be returned instead.
-      final bytes = File(
-        'test/data/programming/rust/test.rs',
-      ).readAsBytesSync();
+      final bytes = File('test/data/programming/rust/test.rs')
+          .readAsBytesSync();
       final result = detect(bytes: bytes);
       // The blended result for Rust source bytes is text/x-csrc (C source
       // magic heuristic). The override registry is not in play here.
@@ -147,16 +145,13 @@ void main() {
     //   3. Blended results are unchanged when no custom registry is supplied.
     // -----------------------------------------------------------------------
 
-    test(
-      'custom registry wins when it matches (*.bingo → application/vnd.test.bingo)',
-      () {
-        final result = detect(
-          fileName: 'my_data.bingo',
-          customRegistry: _BingoRegistry(),
-        );
-        expect(result.bestMatch, equals('application/vnd.test.bingo'));
-      },
-    );
+    test('custom registry wins when it matches (*.bingo → application/vnd.test.bingo)', () {
+      final result = detect(
+        fileName: 'my_data.bingo',
+        customRegistry: _BingoRegistry(),
+      );
+      expect(result.bestMatch, equals('application/vnd.test.bingo'));
+    });
 
     test('custom registry short-circuits override and blended registries', () {
       // _CustomRsRegistry maps *.rs to a fictional type at weight 80.

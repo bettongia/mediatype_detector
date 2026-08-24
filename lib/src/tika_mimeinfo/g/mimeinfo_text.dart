@@ -917,16 +917,14 @@ final Registry mimeinfoDbText = {
             Match.factory(
               type: MatchType.regex,
               offset: '0',
-              value:
-                  '(?s)^(?:\\s*//[^\\n]*\n){1,10}\\s*(?:strict\\s+)?(?:di)?graph\\b',
+              value: '(?s)^(?:\\s*//[^\\n]*\n){1,10}\\s*(?:strict\\s+)?(?:di)?graph\\b',
               mask: null,
               minShouldMatch: null,
             ),
             Match.factory(
               type: MatchType.regex,
               offset: '0',
-              value:
-                  '(?s)^\\s*/\\*.{0,1024}?\\*/\\s*(?:strict\\s+)?(?:di)?graph\\b',
+              value: '(?s)^\\s*/\\*.{0,1024}?\\*/\\s*(?:strict\\s+)?(?:di)?graph\\b',
               mask: null,
               minShouldMatch: null,
             ),

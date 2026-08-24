@@ -62,7 +62,7 @@ license_add:
 
 coverage:
 	dart test --coverage-path=coverage/lcov.info
-	lcov --remove coverage/lcov.info '*/g/*' --output-file coverage/lcov.filtered.info
+	lcov --ignore-errors empty --remove coverage/lcov.info '*/g/*' --output-file coverage/lcov.filtered.info
 	rm -rf site/coverage
 	mkdir -p site/coverage
 	genhtml coverage/lcov.filtered.info -o site/coverage
@@ -72,7 +72,7 @@ coverage:
 ## Excludes generated /g/ files from the threshold calculation.
 coverage_check:
 	dart test --coverage-path=coverage/lcov.info
-	lcov --remove coverage/lcov.info '*/g/*' --output-file coverage/lcov.filtered.info
+	lcov --ignore-errors empty --remove coverage/lcov.info '*/g/*' --output-file coverage/lcov.filtered.info
 	@set -e; \
 	pct=$$(lcov --summary coverage/lcov.filtered.info 2>&1 | grep 'lines\.\.\.' | awk '{print $$2}' | tr -d '%'); \
 	echo "Coverage: $${pct}%"; \

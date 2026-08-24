@@ -17,6 +17,7 @@
 
 import 'package:meta/meta.dart';
 import 'package:betto_mediatype_detector/betto_mediatype_detector.dart';
+
 import 'mimeinfo_application.dart';
 import 'mimeinfo_audio.dart';
 import 'mimeinfo_text.dart';

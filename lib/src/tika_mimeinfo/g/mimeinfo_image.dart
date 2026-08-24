@@ -46,8 +46,7 @@ final Registry mimeinfoDbImage = {
                 Match.factory(
                   type: MatchType.regex,
                   offset: '8',
-                  value:
-                      '.*[\\x54\\x52\\x55\\x45\\x56\\x49\\x53\\x49\\x4F\\x4E\\x2D\\x58\\x46\\x49\\x4C\\x45\\x2E\\x00]',
+                  value: '.*[\\x54\\x52\\x55\\x45\\x56\\x49\\x53\\x49\\x4F\\x4E\\x2D\\x58\\x46\\x49\\x4C\\x45\\x2E\\x00]',
                   mask: null,
                   minShouldMatch: null,
                 ),
@@ -63,8 +62,7 @@ final Registry mimeinfoDbImage = {
                 Match.factory(
                   type: MatchType.regex,
                   offset: '8',
-                  value:
-                      '.*[\\x54\\x52\\x55\\x45\\x56\\x49\\x53\\x49\\x4F\\x4E\\x2D\\x58\\x46\\x49\\x4C\\x45\\x2E\\x00]',
+                  value: '.*[\\x54\\x52\\x55\\x45\\x56\\x49\\x53\\x49\\x4F\\x4E\\x2D\\x58\\x46\\x49\\x4C\\x45\\x2E\\x00]',
                   mask: null,
                   minShouldMatch: null,
                 ),
@@ -80,8 +78,7 @@ final Registry mimeinfoDbImage = {
                 Match.factory(
                   type: MatchType.regex,
                   offset: '8',
-                  value:
-                      '.*[\\x54\\x52\\x55\\x45\\x56\\x49\\x53\\x49\\x4F\\x4E\\x2D\\x58\\x46\\x49\\x4C\\x45\\x2E\\x00]',
+                  value: '.*[\\x54\\x52\\x55\\x45\\x56\\x49\\x53\\x49\\x4F\\x4E\\x2D\\x58\\x46\\x49\\x4C\\x45\\x2E\\x00]',
                   mask: null,
                   minShouldMatch: null,
                 ),

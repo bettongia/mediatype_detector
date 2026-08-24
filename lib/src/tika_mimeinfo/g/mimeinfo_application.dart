@@ -360,8 +360,7 @@ final Registry mimeinfoDbApplication = {
             Match.factory(
               type: MatchType.regex,
               offset: '0',
-              value:
-                  '(?s)^[\\x02\\x03\\x30\\x31\\x32\\x43\\x63\\x83\\x8B\\xCB\\xF5\\xE5\\xFB].[\\x01-\\x0C][\\x01-\\x1F].{4}(?:.[^\\x00]|[\\x41-\\xFF].)(?:[^\\x00\\x01].|.[^\\x00]).{31}(?<=[\\x00][^\\x00]{0,10})[A-Z@+]',
+              value: '(?s)^[\\x02\\x03\\x30\\x31\\x32\\x43\\x63\\x83\\x8B\\xCB\\xF5\\xE5\\xFB].[\\x01-\\x0C][\\x01-\\x1F].{4}(?:.[^\\x00]|[\\x41-\\xFF].)(?:[^\\x00\\x01].|.[^\\x00]).{31}(?<=[\\x00][^\\x00]{0,10})[A-Z@+]',
               mask: null,
               minShouldMatch: null,
             ),
@@ -2184,8 +2183,7 @@ final Registry mimeinfoDbApplication = {
                 Match.factory(
                   type: MatchType.string,
                   offset: '1152:4096',
-                  value:
-                      'W\x00o\x00r\x00d\x00D\x00o\x00c\x00u\x00m\x00e\x00n\x00t',
+                  value: 'W\x00o\x00r\x00d\x00D\x00o\x00c\x00u\x00m\x00e\x00n\x00t',
                   mask: null,
                   minShouldMatch: null,
                 ),
@@ -6500,8 +6498,7 @@ final Registry mimeinfoDbApplication = {
                 Match.factory(
                   type: MatchType.string,
                   offset: '1152:4096',
-                  value:
-                      'P\x00o\x00w\x00e\x00r\x00P\x00o\x00i\x00n\x00t\x00 D\x00o\x00c\x00u\x00m\x00e\x00n\x00t',
+                  value: 'P\x00o\x00w\x00e\x00r\x00P\x00o\x00i\x00n\x00t\x00 D\x00o\x00c\x00u\x00m\x00e\x00n\x00t',
                   mask: null,
                   minShouldMatch: null,
                 ),
@@ -7030,8 +7027,7 @@ final Registry mimeinfoDbApplication = {
                 Match.factory(
                   type: MatchType.string,
                   offset: '30',
-                  value:
-                      'mimetypeapplication/vnd.oasis.opendocument.chart-template',
+                  value: 'mimetypeapplication/vnd.oasis.opendocument.chart-template',
                   mask: null,
                   minShouldMatch: null,
                 ),
@@ -7101,8 +7097,7 @@ final Registry mimeinfoDbApplication = {
                 Match.factory(
                   type: MatchType.string,
                   offset: '30',
-                  value:
-                      'mimetypeapplication/vnd.oasis.opendocument.formula-template',
+                  value: 'mimetypeapplication/vnd.oasis.opendocument.formula-template',
                   mask: null,
                   minShouldMatch: null,
                 ),
@@ -7164,8 +7159,7 @@ final Registry mimeinfoDbApplication = {
                 Match.factory(
                   type: MatchType.string,
                   offset: '30',
-                  value:
-                      'mimetypeapplication/vnd.oasis.opendocument.graphics-template',
+                  value: 'mimetypeapplication/vnd.oasis.opendocument.graphics-template',
                   mask: null,
                   minShouldMatch: null,
                 ),
@@ -7227,8 +7221,7 @@ final Registry mimeinfoDbApplication = {
                 Match.factory(
                   type: MatchType.string,
                   offset: '30',
-                  value:
-                      'mimetypeapplication/vnd.oasis.opendocument.image-template',
+                  value: 'mimetypeapplication/vnd.oasis.opendocument.image-template',
                   mask: null,
                   minShouldMatch: null,
                 ),
@@ -7291,8 +7284,7 @@ final Registry mimeinfoDbApplication = {
                 Match.factory(
                   type: MatchType.string,
                   offset: '30',
-                  value:
-                      'mimetypeapplication/vnd.oasis.opendocument.presentation-template',
+                  value: 'mimetypeapplication/vnd.oasis.opendocument.presentation-template',
                   mask: null,
                   minShouldMatch: null,
                 ),
@@ -7355,8 +7347,7 @@ final Registry mimeinfoDbApplication = {
                 Match.factory(
                   type: MatchType.string,
                   offset: '30',
-                  value:
-                      'mimetypeapplication/vnd.oasis.opendocument.spreadsheet-template',
+                  value: 'mimetypeapplication/vnd.oasis.opendocument.spreadsheet-template',
                   mask: null,
                   minShouldMatch: null,
                 ),
@@ -7487,8 +7478,7 @@ final Registry mimeinfoDbApplication = {
                 Match.factory(
                   type: MatchType.string,
                   offset: '30',
-                  value:
-                      'mimetypeapplication/vnd.oasis.opendocument.text-template',
+                  value: 'mimetypeapplication/vnd.oasis.opendocument.text-template',
                   mask: null,
                   minShouldMatch: null,
                 ),
@@ -7777,8 +7767,7 @@ final Registry mimeinfoDbApplication = {
   ],
   'application/vnd.openxmlformats-officedocument.presentationml.presentation': [
     RegistryEntry(
-      mediaType:
-          'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+      mediaType: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
       subclassOf: ['application/x-tika-ooxml'],
       alias: [],
       globs: [
@@ -7798,8 +7787,7 @@ final Registry mimeinfoDbApplication = {
   ],
   'application/vnd.openxmlformats-officedocument.presentationml.template': [
     RegistryEntry(
-      mediaType:
-          'application/vnd.openxmlformats-officedocument.presentationml.template',
+      mediaType: 'application/vnd.openxmlformats-officedocument.presentationml.template',
       subclassOf: ['application/x-tika-ooxml'],
       alias: [],
       globs: [Glob(pattern: '*.potx', weight: 50, caseSensitive: false)],
@@ -7807,8 +7795,7 @@ final Registry mimeinfoDbApplication = {
   ],
   'application/vnd.openxmlformats-officedocument.presentationml.slideshow': [
     RegistryEntry(
-      mediaType:
-          'application/vnd.openxmlformats-officedocument.presentationml.slideshow',
+      mediaType: 'application/vnd.openxmlformats-officedocument.presentationml.slideshow',
       subclassOf: ['application/x-tika-ooxml'],
       alias: [],
       globs: [Glob(pattern: '*.ppsx', weight: 50, caseSensitive: false)],
@@ -7825,8 +7812,7 @@ final Registry mimeinfoDbApplication = {
   ],
   'application/vnd.openxmlformats-officedocument.spreadsheetml.template': [
     RegistryEntry(
-      mediaType:
-          'application/vnd.openxmlformats-officedocument.spreadsheetml.template',
+      mediaType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.template',
       subclassOf: ['application/x-tika-ooxml'],
       alias: [],
       globs: [Glob(pattern: '*.xltx', weight: 50, caseSensitive: false)],
@@ -7842,8 +7828,7 @@ final Registry mimeinfoDbApplication = {
   ],
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document': [
     RegistryEntry(
-      mediaType:
-          'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      mediaType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
       subclassOf: ['application/x-tika-ooxml'],
       alias: [],
       globs: [Glob(pattern: '*.docx', weight: 50, caseSensitive: false)],
@@ -7851,8 +7836,7 @@ final Registry mimeinfoDbApplication = {
   ],
   'application/vnd.openxmlformats-officedocument.wordprocessingml.template': [
     RegistryEntry(
-      mediaType:
-          'application/vnd.openxmlformats-officedocument.wordprocessingml.template',
+      mediaType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.template',
       subclassOf: ['application/x-tika-ooxml'],
       alias: [],
       globs: [Glob(pattern: '*.dotx', weight: 50, caseSensitive: false)],
@@ -16326,8 +16310,7 @@ final Registry mimeinfoDbApplication = {
                 Match.factory(
                   type: MatchType.string,
                   offset: '1152:4096',
-                  value:
-                      'W\x00k\x00s\x00S\x00S\x00W\x00o\x00r\x00k\x00B\x00o\x00o\x00k',
+                  value: 'W\x00k\x00s\x00S\x00S\x00W\x00o\x00r\x00k\x00B\x00o\x00o\x00k',
                   mask: null,
                   minShouldMatch: null,
                 ),

@@ -47,7 +47,7 @@ Add the package to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  betto_mediatype_detector: ^0.1.0-dev.1
+  betto_mediatype_detector: ^0.1.0
 ```
 
 Then run:

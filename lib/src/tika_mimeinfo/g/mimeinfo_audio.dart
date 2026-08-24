@@ -674,8 +674,7 @@ final Registry mimeinfoDbAudio = {
             Match.factory(
               type: MatchType.regex,
               offset: '0',
-              value:
-                  '(?:\\x0D\\x0A|\\x00{1,1024})(?:\\xff[\\xe3\\xf2\\xf3\\xf4\\xf5\\xf6\\xf7\\xf8\\xf9\\xfa\\xfb\\xfc\\xfd\\xfe\\xff]|ID3)',
+              value: '(?:\\x0D\\x0A|\\x00{1,1024})(?:\\xff[\\xe3\\xf2\\xf3\\xf4\\xf5\\xf6\\xf7\\xf8\\xf9\\xfa\\xfb\\xfc\\xfd\\xfe\\xff]|ID3)',
               mask: null,
               minShouldMatch: null,
             ),
@@ -721,8 +720,7 @@ final Registry mimeinfoDbAudio = {
               type: MatchType.string,
               offset: '0',
               value: 'OggS\x00.......................\x01vorbis',
-              mask:
-                  '0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFFFFFF',
+              mask: '0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFFFFFF',
               minShouldMatch: null,
             ),
           ],
@@ -859,8 +857,7 @@ final Registry mimeinfoDbAudio = {
               type: MatchType.string,
               offset: '0',
               value: 'OggS\x00.......................FLAC',
-              mask:
-                  '0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFF',
+              mask: '0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFF',
               minShouldMatch: null,
             ),
           ],
@@ -881,8 +878,7 @@ final Registry mimeinfoDbAudio = {
               type: MatchType.string,
               offset: '0',
               value: 'OggS\x00.......................PCM     ',
-              mask:
-                  '0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFFFFFFFFFF',
+              mask: '0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFFFFFFFFFF',
               minShouldMatch: null,
             ),
           ],
@@ -904,8 +900,7 @@ final Registry mimeinfoDbAudio = {
               type: MatchType.string,
               offset: '0',
               value: 'OggS\x00.......................OpusHead',
-              mask:
-                  '0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFFFFFFFFFF',
+              mask: '0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFFFFFFFFFF',
               minShouldMatch: null,
             ),
           ],
@@ -927,8 +922,7 @@ final Registry mimeinfoDbAudio = {
               type: MatchType.string,
               offset: '0',
               value: 'OggS\x00.......................Speex   ',
-              mask:
-                  '0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFFFFFFFFFF',
+              mask: '0xFFFFFFFF00000000000000000000000000000000000000000000000000FFFFFFFFFFFFFFFF',
               minShouldMatch: null,
             ),
           ],
@@ -1215,8 +1209,7 @@ final Registry mimeinfoDbAudio = {
             Match.factory(
               type: MatchType.regex,
               offset: '0',
-              value:
-                  '(?s)\\xFF[\\xF0\\xF1\\xF8\\xF9].{2}.{100,2000}\\xFF[\\xF0\\xF1\\xF8\\xF9]',
+              value: '(?s)\\xFF[\\xF0\\xF1\\xF8\\xF9].{2}.{100,2000}\\xFF[\\xF0\\xF1\\xF8\\xF9]',
               mask: null,
               minShouldMatch: null,
             ),
@@ -1235,8 +1228,7 @@ final Registry mimeinfoDbAudio = {
                 Match.factory(
                   type: MatchType.regex,
                   offset: '512:8192',
-                  value:
-                      '(?s)\\xFF[\\xF0\\xF1\\xF8\\xF9].{2}.{100,2000}\\xFF[\\xF0\\xF1\\xF8\\xF9]',
+                  value: '(?s)\\xFF[\\xF0\\xF1\\xF8\\xF9].{2}.{100,2000}\\xFF[\\xF0\\xF1\\xF8\\xF9]',
                   mask: null,
                   minShouldMatch: null,
                 ),

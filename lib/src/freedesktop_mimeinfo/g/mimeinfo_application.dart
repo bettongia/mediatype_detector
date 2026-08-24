@@ -216,16 +216,14 @@ final Registry mimeinfoDbApplication = {
             Match.factory(
               type: MatchType.string,
               offset: '100:256',
-              value:
-                  'This notebook can be used on any computer system with Mathematica',
+              value: 'This notebook can be used on any computer system with Mathematica',
               mask: null,
               minShouldMatch: null,
             ),
             Match.factory(
               type: MatchType.string,
               offset: '10:256',
-              value:
-                  'This is a Mathematica Notebook file.  It contains ASCII text',
+              value: 'This is a Mathematica Notebook file.  It contains ASCII text',
               mask: null,
               minShouldMatch: null,
             ),
@@ -2686,8 +2684,7 @@ final Registry mimeinfoDbApplication = {
                     Match.factory(
                       type: MatchType.string,
                       offset: '38',
-                      value:
-                          'application/vnd.oasis.opendocument.graphics-template',
+                      value: 'application/vnd.oasis.opendocument.graphics-template',
                       mask: null,
                       minShouldMatch: null,
                     ),
@@ -2789,8 +2786,7 @@ final Registry mimeinfoDbApplication = {
                     Match.factory(
                       type: MatchType.string,
                       offset: '38',
-                      value:
-                          'application/vnd.oasis.opendocument.presentation-template',
+                      value: 'application/vnd.oasis.opendocument.presentation-template',
                       mask: null,
                       minShouldMatch: null,
                     ),
@@ -2892,8 +2888,7 @@ final Registry mimeinfoDbApplication = {
                     Match.factory(
                       type: MatchType.string,
                       offset: '38',
-                      value:
-                          'application/vnd.oasis.opendocument.spreadsheet-template',
+                      value: 'application/vnd.oasis.opendocument.spreadsheet-template',
                       mask: null,
                       minShouldMatch: null,
                     ),
@@ -5026,8 +5021,7 @@ final Registry mimeinfoDbApplication = {
             Match.factory(
               type: MatchType.string,
               offset: '1',
-              value:
-                  'SYSTEME D\'ARCHIVAGE PUKALL S.A.P. (c) Alexandre PUKALL Avril 1998',
+              value: 'SYSTEME D\'ARCHIVAGE PUKALL S.A.P. (c) Alexandre PUKALL Avril 1998',
               mask: null,
               minShouldMatch: null,
             ),
@@ -5976,8 +5970,7 @@ final Registry mimeinfoDbApplication = {
             Match.factory(
               type: MatchType.string,
               offset: '260',
-              value:
-                  '\xce\xedff\xcc\r\x00\v\x03s\x00\x83\x00\f\x00\r\x00\b\x11\x1f\x88\x89\x00\x0e',
+              value: '\xce\xedff\xcc\r\x00\v\x03s\x00\x83\x00\f\x00\r\x00\b\x11\x1f\x88\x89\x00\x0e',
               mask: null,
               minShouldMatch: null,
               subMatches: [
@@ -8340,8 +8333,7 @@ final Registry mimeinfoDbApplication = {
             Match.factory(
               type: MatchType.string,
               offset: '0',
-              value:
-                  'L\x00\x00\x00\x01\x14\x02\x00\x00\x00\x00\x00\xc0\x00\x00\x00\x00\x00\x00F',
+              value: 'L\x00\x00\x00\x01\x14\x02\x00\x00\x00\x00\x00\xc0\x00\x00\x00\x00\x00\x00F',
               mask: null,
               minShouldMatch: null,
             ),
@@ -11260,8 +11252,7 @@ final Registry mimeinfoDbApplication = {
   ],
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document': [
     RegistryEntry(
-      mediaType:
-          'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      mediaType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
       genericIcon: GenericIcon.xOfficeDocument,
       comments: [IntlString.constant('Word 2007 document')],
       subclassOf: ['application/zip'],
@@ -11271,8 +11262,7 @@ final Registry mimeinfoDbApplication = {
   ],
   'application/vnd.openxmlformats-officedocument.wordprocessingml.template': [
     RegistryEntry(
-      mediaType:
-          'application/vnd.openxmlformats-officedocument.wordprocessingml.template',
+      mediaType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.template',
       genericIcon: GenericIcon.xOfficeDocument,
       comments: [IntlString.constant('Word 2007 document template')],
       subclassOf: ['application/zip'],
@@ -11282,8 +11272,7 @@ final Registry mimeinfoDbApplication = {
   ],
   'application/vnd.openxmlformats-officedocument.presentationml.presentation': [
     RegistryEntry(
-      mediaType:
-          'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+      mediaType: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
       genericIcon: GenericIcon.xOfficePresentation,
       comments: [IntlString.constant('PowerPoint 2007 presentation')],
       subclassOf: ['application/zip'],
@@ -11304,8 +11293,7 @@ final Registry mimeinfoDbApplication = {
   ],
   'application/vnd.openxmlformats-officedocument.presentationml.slideshow': [
     RegistryEntry(
-      mediaType:
-          'application/vnd.openxmlformats-officedocument.presentationml.slideshow',
+      mediaType: 'application/vnd.openxmlformats-officedocument.presentationml.slideshow',
       genericIcon: GenericIcon.xOfficePresentation,
       comments: [IntlString.constant('PowerPoint 2007 show')],
       subclassOf: ['application/zip'],
@@ -11315,8 +11303,7 @@ final Registry mimeinfoDbApplication = {
   ],
   'application/vnd.openxmlformats-officedocument.presentationml.template': [
     RegistryEntry(
-      mediaType:
-          'application/vnd.openxmlformats-officedocument.presentationml.template',
+      mediaType: 'application/vnd.openxmlformats-officedocument.presentationml.template',
       genericIcon: GenericIcon.xOfficePresentation,
       comments: [IntlString.constant('PowerPoint 2007 presentation template')],
       subclassOf: ['application/zip'],
@@ -11337,8 +11324,7 @@ final Registry mimeinfoDbApplication = {
   ],
   'application/vnd.openxmlformats-officedocument.spreadsheetml.template': [
     RegistryEntry(
-      mediaType:
-          'application/vnd.openxmlformats-officedocument.spreadsheetml.template',
+      mediaType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.template',
       genericIcon: GenericIcon.xOfficeSpreadsheet,
       comments: [IntlString.constant('Excel 2007 spreadsheet template')],
       subclassOf: ['application/zip'],
